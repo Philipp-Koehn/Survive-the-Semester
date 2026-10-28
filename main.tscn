@@ -25,4 +25,3 @@ Spawner = NodePath("../EnemySpawner")
 BasicEnemy = ExtResource("2_h2yge")
 Deadline = ExtResource("4_1bvp3")
 HomeworkStack = ExtResource("6_7mycd")
-WeekDuration = 5.0
