@@ -148,3 +148,50 @@
   → Lösung: Shape beim Stapel über „Einzigartig machen“ als eigene Kopie angelegt.
 - Die Farben wirken dunkler als eingestellt, weil `Modulate` mit dem blauen
   Platzhalter-Sprite multipliziert wird. Wird mit eigenen Grafiken behoben.
+
+## 5. Wellensystem (Semester-Wochen)
+
+**Datum:** 28.10.2026
+**Dateien:** `scripts/enemies/WaveManager.cs`, `main.tscn`
+
+### Umsetzung
+- Der `WaveManager` (Node in der Hauptszene) teilt das Spiel in **14 Wochen**
+  à 30 Sekunden ein (`WeekDuration`, `TotalWeeks`).
+- Zu Beginn jeder Woche passt er den `EnemySpawner` an:
+  - **Spawn-Intervall:** startet bei 1,5 s und wird pro Woche 0,1 s kürzer,
+    mindestens 0,3 s.
+  - **Gegnerliste:** bestimmt, welche Typen vorkommen und wie häufig.
+
+| Woche | Gegner in der Liste |
+|---|---|
+| 1–2 | 2× Standard |
+| 3–4 | 2× Standard, 1× Deadline |
+| 5–8 | 2× Standard, 1× Deadline, 1× Stapel |
+| 9–14 | 2× Standard, 2× Deadline, 2× Stapel |
+
+- Nach Woche 14 wird der Spawner gestoppt und „Semester geschafft!“ ausgegeben.
+- Signale `WeekChanged(int week)` und `SemesterFinished` werden ausgelöst,
+  damit andere Teile des Spiels darauf reagieren können.
+
+### Designentscheidungen
+- **Wochen statt abstrakter Wellen:** passt zum Thema „Survive the Semester“
+  und gibt dem Spieler eine verständliche Fortschrittsanzeige.
+- **Getrennte Verantwortung:** Der Spawner weiß nur, *wie* er spawnt.
+  Der WaveManager entscheidet, *was* und *wie schnell*. So bleiben beide
+  Skripte einfach und unabhängig testbar.
+- **Signale als Schnittstelle zur UI:** Fabian kann `WeekChanged` für die
+  Wochenanzeige und `SemesterFinished` für den Sieg-Bildschirm nutzen,
+  ohne den Gegnercode zu kennen.
+- **Alle Werte im Inspektor einstellbar:** Wochenlänge, Anzahl der Wochen und
+  Tempo-Steigerung lassen sich beim Balancing ohne Code-Änderung anpassen.
+
+### Test
+- Mit `WeekDuration = 5` getestet: Die Wochen 1 bis 14 laufen nacheinander durch,
+  neue Gegnertypen erscheinen ab Woche 3 bzw. 5, danach erscheint
+  „Semester geschafft!“ und es spawnen keine neuen Gegner mehr.
+- Anschließend wieder auf 30 Sekunden zurückgestellt.
+
+### Offene Punkte
+- Prüfungs-Bosse (Zwischenprüfung, Klausur) werden als Nächstes ergänzt.
+- Die Wochenanzeige auf dem Bildschirm übernimmt die UI (Fabian) über das
+  Signal `WeekChanged`.

@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://c43dijje2s2yf" path="res://scenes/enemies/deadline.tscn" id="4_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bokvke5pm2kid" path="res://scenes/enemies/homework_stack.tscn" id="6_7mycd"]
+[ext_resource type="Script" uid="uid://byns0oyfd6bii" path="res://scripts/enemies/WaveManager.cs" id="7_272bh"]
 
 [node name="Main" type="Node2D" unique_id=1386934817]
 
@@ -17,3 +18,11 @@ script = ExtResource("1_1bvp3")
 [node name="EnemySpawner" type="Node2D" parent="." unique_id=2135026305]
 script = ExtResource("2_0xm2m")
 EnemyScenes = [ExtResource("4_1bvp3"), ExtResource("2_h2yge"), ExtResource("6_7mycd")]
+
+[node name="WaveManager" type="Node" parent="." unique_id=282176373 node_paths=PackedStringArray("Spawner")]
+script = ExtResource("7_272bh")
+Spawner = NodePath("../EnemySpawner")
+BasicEnemy = ExtResource("2_h2yge")
+Deadline = ExtResource("4_1bvp3")
+HomeworkStack = ExtResource("6_7mycd")
+WeekDuration = 5.0
