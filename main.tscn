@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cr3480hmyljsh"]
 
 [ext_resource type="PackedScene" uid="uid://dult7piwq1xeg" path="res://scenes/test/test_player.tscn" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://dgysb6aimfd6a" path="res://scripts/enemies/EnemySpawner.cs" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="2_h2yge"]
 
 [node name="Main" type="Node2D" unique_id=1386934817]
@@ -8,11 +9,6 @@
 [node name="TestPlayer" parent="." unique_id=895673670 instance=ExtResource("1_0xm2m")]
 position = Vector2(575, 330)
 
-[node name="Enemy" parent="." unique_id=971391848 instance=ExtResource("2_h2yge")]
-position = Vector2(1022, 547)
-
-[node name="Enemy2" parent="." unique_id=328533634 instance=ExtResource("2_h2yge")]
-position = Vector2(134, 537)
-
-[node name="Enemy3" parent="." unique_id=525212465 instance=ExtResource("2_h2yge")]
-position = Vector2(886, 133)
+[node name="EnemySpawner" type="Node2D" parent="." unique_id=2135026305]
+script = ExtResource("2_0xm2m")
+EnemyScene = ExtResource("2_h2yge")
