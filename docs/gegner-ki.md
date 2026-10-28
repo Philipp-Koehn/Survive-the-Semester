@@ -219,3 +219,40 @@
 
 ### Test
 - Deadline stirbt nach 1 Treffer, Standard-Gegner nach 2, Hausaufgaben-Stapel nach 8.
+
+## 7. Prüfungs-Boss „Zwischenprüfung“
+
+**Datum:** 28.10.2026
+**Dateien:** `scripts/enemies/Boss.cs`, `scenes/enemies/midterm_exam.tscn`
+
+### Umsetzung
+- `Boss` erbt von `Enemy` und übernimmt Verfolgung und Kontaktschaden.
+- Zusätzlich ruft der Boss alle 4 Sekunden 3 Deadlines („Prüfungsfragen“)
+  gleichmäßig im Kreis um sich herum herbei (`MinionScene`, `SummonInterval`,
+  `MinionsPerSummon`, `SummonRadius`).
+- Signal `HealthChanged(int health, int maxHealth)` bei jedem Treffer,
+  z. B. für eine Boss-Lebensleiste in der UI (Fabian).
+- Bosse sind zusätzlich in der Group `"bosses"`.
+- `midterm_exam.tscn` ist eine geerbte Szene von `enemy.tscn` mit `Boss.cs`
+  als Skript: 150 HP, Speed 70, Kontaktschaden 15, Scale 1.2, eigene Hitbox (Radius 75).
+
+### Designentscheidungen
+- **Vererbung im Code (`Boss : Enemy`):** Die Grundlogik existiert nur einmal.
+  Der Boss überschreibt nur, was anders ist (`_PhysicsProcess`, `TakeDamage`).
+- **Herbeigerufene Gegner statt komplexer Angriffe:** einfach umzusetzen, passt
+  zum Thema (eine Prüfung wirft viele Fragen auf) und erhöht den Druck,
+  ohne neue Mechaniken zu brauchen.
+- **Name als Export:** Derselbe Code dient für verschiedene Prüfungen.
+
+### Test
+- Boss testweise in `main.tscn` platziert, Test-Angriff auf 25 Schaden erhöht.
+- Ergebnis: „Zwischenprüfung erscheint! (150 HP)“, pro Treffer −25 HP,
+  nach 6 Treffern „Zwischenprüfung bestanden!“. Test-Boss danach wieder entfernt.
+
+### Probleme & Lösungen
+- „bestanden!“ wurde vor der letzten HP-Meldung ausgegeben, weil der Boss
+  schon beim Schaden stirbt. → Meldung in `TakeDamage` nach der HP-Ausgabe verschoben.
+
+### Offene Punkte
+- Boss automatisch über den WaveManager spawnen (Woche 7).
+- Endklausur als zweiter Boss in Woche 14, Semester endet erst nach ihrem Sieg.
