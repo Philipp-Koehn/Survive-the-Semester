@@ -1,34 +1,38 @@
 using Godot;
 
 // Basis-Gegner: läuft direkt auf den Spieler zu und macht Kontaktschaden.
-// Alle Gegnertypen (Deadline, Hausaufgaben-Stapel, ...) bauen hierauf auf.
+// Alle Gegnertypen (Deadline, Hausaufgaben-Stapel, Bosse) bauen hierauf auf.
 public partial class Enemy : CharacterBody2D
 {
+	// Wird ausgelöst, wenn der Gegner stirbt (z. B. für Bosse, XP-Drops, Statistik)
+	[Signal] public delegate void DiedEventHandler(Enemy enemy);
+
 	[Export] public float Speed = 120f;
 	[Export] public int MaxHealth = 10;
 	[Export] public int ContactDamage = 5;
 	[Export] public double DamageCooldown = 1.0;
 
-	private int _health;
+	public int Health { get; private set; }
+
+	protected Node2D Player;
 	private double _cooldownLeft;
-	private Node2D _player;
 
 	public override void _Ready()
 	{
-		_health = MaxHealth;
+		Health = MaxHealth;
 		AddToGroup("enemies");
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (_player == null || !IsInstanceValid(_player))
+		if (Player == null || !IsInstanceValid(Player))
 		{
-			_player = GetTree().GetFirstNodeInGroup("player") as Node2D;
-			if (_player == null) return;
+			Player = GetTree().GetFirstNodeInGroup("player") as Node2D;
+			if (Player == null) return;
 		}
 
 		// Verfolgungs-KI: direkt in Richtung Spieler
-		Velocity = GlobalPosition.DirectionTo(_player.GlobalPosition) * Speed;
+		Velocity = GlobalPosition.DirectionTo(Player.GlobalPosition) * Speed;
 		MoveAndSlide();
 
 		// Kontaktschaden mit Abklingzeit
@@ -45,10 +49,17 @@ public partial class Enemy : CharacterBody2D
 		}
 	}
 
-	public void TakeDamage(int amount)
+	public virtual void TakeDamage(int amount)
 	{
-		_health -= amount;
-		if (_health <= 0)
-			QueueFree(); // später: XP-Drop
+		if (Health <= 0) return; // schon tot, nicht doppelt sterben
+		Health -= amount;
+		if (Health <= 0)
+			Die();
+	}
+
+	protected virtual void Die()
+	{
+		EmitSignal(SignalName.Died, this);
+		QueueFree(); // später: XP-Drop
 	}
 }

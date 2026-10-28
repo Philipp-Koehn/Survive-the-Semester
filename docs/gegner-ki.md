@@ -195,3 +195,27 @@
 - Prüfungs-Bosse (Zwischenprüfung, Klausur) werden als Nächstes ergänzt.
 - Die Wochenanzeige auf dem Bildschirm übernimmt die UI (Fabian) über das
   Signal `WeekChanged`.
+
+## 6. Gegner besiegen: Died-Signal und Test-Angriff
+
+**Datum:** 28.10.2026
+**Dateien:** `scripts/enemies/Enemy.cs`, `scripts/test/TestPlayer.cs`
+
+### Umsetzung
+- `Enemy` hat jetzt ein Signal `Died(Enemy enemy)`, das beim Tod ausgelöst wird,
+  und eine öffentliche Eigenschaft `Health`.
+- `TakeDamage()` und `Die()` sind `virtual`, damit spezielle Gegner (Bosse)
+  eigenes Verhalten ergänzen können. Doppeltes Sterben wird verhindert.
+- Der Test-Spieler hat einen Platzhalter-Angriff auf der Leertaste: Alle Gegner
+  im Umkreis von 150 px erhalten 5 Schaden.
+
+### Designentscheidungen
+- **Test-Angriff statt auf die Waffe zu warten:** Bosse und Semester-Ende
+  setzen voraus, dass Gegner besiegt werden können. Der Angriff nutzt dieselbe
+  Schnittstelle (`TakeDamage`), die später auch die echte Waffe (Philipp) aufruft.
+  Er wird zusammen mit dem Test-Spieler entfernt.
+- **Signal statt direkter Aufrufe:** Andere Systeme (Bosse, XP, Statistik) können
+  auf `Died` reagieren, ohne dass der Gegner sie kennen muss.
+
+### Test
+- Deadline stirbt nach 1 Treffer, Standard-Gegner nach 2, Hausaufgaben-Stapel nach 8.
