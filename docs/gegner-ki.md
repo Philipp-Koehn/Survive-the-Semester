@@ -109,3 +109,42 @@
 - Der Rand ist bisher nur optisch, der Spieler kann noch hinauslaufen.
   Begrenzung durch Wände folgt.
 - Der Boden ist nur im laufenden Spiel sichtbar, nicht im Editor.
+
+## 4. Gegnertypen
+
+**Datum:** 28.10.2026
+**Dateien:** `scenes/enemies/deadline.tscn`, `scenes/enemies/homework_stack.tscn`,
+`scripts/enemies/EnemySpawner.cs` (Liste statt einzelner Szene), `main.tscn`
+
+### Umsetzung
+- Neue Gegnertypen sind **geerbte Szenen** von `enemy.tscn`. Sie übernehmen
+  Verhalten und Aufbau des Basis-Gegners, nur Werte und Aussehen werden überschrieben.
+
+| Typ | Rolle | Speed | Leben | Schaden | Aussehen |
+|---|---|---|---|---|---|
+| Enemy | Standard | 120 | 10 | 5 | rot, Scale 0.5 |
+| Deadline | schnell, schwach | 220 | 5 | 3 | orange, Scale 0.35 |
+| Hausaufgaben-Stapel | langsam, zäh | 60 | 40 | 10 | lila, Scale 0.8, Hitbox-Radius 50 |
+
+- Der Spawner hat statt einer einzelnen Szene jetzt eine Liste `EnemyScenes`
+  und wählt bei jedem Spawn zufällig einen Typ daraus.
+
+### Designentscheidungen
+- **Vererbung statt neuer Skripte:** Kein doppelter Code. Änderungen am
+  Basis-Gegner (z. B. an der KI) wirken automatisch auf alle Typen.
+- **Unterschiedliche Rollen:** Deadlines erzeugen Druck durch Tempo, Stapel
+  blockieren Wege und halten viel aus. So muss der Spieler sich bewegen und
+  priorisieren, statt stehen zu bleiben.
+- **Gewichtung über die Liste:** Ein Typ, der mehrfach eingetragen ist, erscheint
+  entsprechend häufiger. Das ist einfach und reicht für den Prototyp.
+
+### Test
+- Ergebnis: Alle drei Typen erscheinen gemischt und unterscheiden sich
+  sichtbar in Größe, Farbe und Geschwindigkeit.
+
+### Probleme & Lösungen
+- Die Kreisform der Kollision wird zwischen Basis-Szene und geerbten Szenen
+  geteilt. Eine Radius-Änderung beim Stapel hätte auch den Basis-Gegner vergrößert.
+  → Lösung: Shape beim Stapel über „Einzigartig machen“ als eigene Kopie angelegt.
+- Die Farben wirken dunkler als eingestellt, weil `Modulate` mit dem blauen
+  Platzhalter-Sprite multipliziert wird. Wird mit eigenen Grafiken behoben.

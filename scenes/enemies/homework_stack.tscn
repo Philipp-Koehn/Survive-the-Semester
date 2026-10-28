@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bokvke5pm2kid"]
+
+[ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="1_ma13q"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0bqv7"]
+radius = 50.0
+
+[node name="HomeworkStack" unique_id=971391848 instance=ExtResource("1_ma13q")]
+Speed = 60.0
+MaxHealth = 40
+ContactDamage = 10
+
+[node name="Sprite2D" parent="." index="0" unique_id=211322272]
+modulate = Color(0.8722665, 0.00053078594, 0.85725015, 1)
+scale = Vector2(0.8, 0.8)
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1126489323]
+shape = SubResource("CircleShape2D_0bqv7")

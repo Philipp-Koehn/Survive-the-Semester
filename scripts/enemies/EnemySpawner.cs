@@ -1,10 +1,10 @@
 using Godot;
 
 // Erzeugt in regelmäßigen Abständen Gegner auf einem Kreis um den Spieler,
-// außerhalb des sichtbaren Bereichs. Grundlage für das spätere Wellensystem.
+// außerhalb des sichtbaren Bereichs. Der Gegnertyp wird zufällig aus einer Liste gewählt.
 public partial class EnemySpawner : Node2D
 {
-	[Export] public PackedScene EnemyScene;
+	[Export] public PackedScene[] EnemyScenes = new PackedScene[0]; // mögliche Gegnertypen
 	[Export] public double SpawnInterval = 1.5;   // Sekunden zwischen zwei Spawns
 	[Export] public float SpawnDistance = 700f;   // Abstand zum Spieler (außerhalb des Bildschirms)
 	[Export] public int MaxEnemies = 50;          // Obergrenze gleichzeitig lebender Gegner
@@ -21,7 +21,6 @@ public partial class EnemySpawner : Node2D
 
 	public override void _Process(double delta)
 	{
-		// Spieler suchen, falls er noch fehlt (gleiches Prinzip wie beim Gegner)
 		if (_player == null || !IsInstanceValid(_player))
 		{
 			_player = GetTree().GetFirstNodeInGroup("player") as Node2D;
@@ -32,7 +31,6 @@ public partial class EnemySpawner : Node2D
 		if (_timeLeft > 0) return;
 		_timeLeft = SpawnInterval;
 
-		// Nicht unendlich viele Gegner erzeugen (Performance)
 		if (GetTree().GetNodesInGroup("enemies").Count >= MaxEnemies) return;
 
 		SpawnEnemy();
@@ -40,16 +38,19 @@ public partial class EnemySpawner : Node2D
 
 	private void SpawnEnemy()
 	{
-		if (EnemyScene == null)
+		if (EnemyScenes.Length == 0)
 		{
-			GD.PushWarning("EnemySpawner: Keine EnemyScene im Inspektor gesetzt!");
+			GD.PushWarning("EnemySpawner: Keine Gegnertypen in EnemyScenes eingetragen!");
 			return;
 		}
 
-		var enemy = EnemyScene.Instantiate<Node2D>();
+		// Zufälligen Gegnertyp aus der Liste wählen
+		PackedScene scene = EnemyScenes[_rng.RandiRange(0, EnemyScenes.Length - 1)];
+		if (scene == null) return;
+
+		var enemy = scene.Instantiate<Node2D>();
 		GetParent().AddChild(enemy);
 
-		// Zufälliger Punkt auf einem Kreis um den Spieler
 		float angle = _rng.RandfRange(0f, Mathf.Tau);
 		enemy.GlobalPosition = _player.GlobalPosition + Vector2.FromAngle(angle) * SpawnDistance;
 	}

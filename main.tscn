@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://f8mov6fg8ie5" path="res://scripts/level/ArenaFloor.cs" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://dgysb6aimfd6a" path="res://scripts/enemies/EnemySpawner.cs" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://c43dijje2s2yf" path="res://scenes/enemies/deadline.tscn" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://bokvke5pm2kid" path="res://scenes/enemies/homework_stack.tscn" id="6_7mycd"]
 
 [node name="Main" type="Node2D" unique_id=1386934817]
 
@@ -14,4 +16,4 @@ script = ExtResource("1_1bvp3")
 
 [node name="EnemySpawner" type="Node2D" parent="." unique_id=2135026305]
 script = ExtResource("2_0xm2m")
-EnemyScene = ExtResource("2_h2yge")
+EnemyScenes = [ExtResource("4_1bvp3"), ExtResource("2_h2yge"), ExtResource("6_7mycd")]
