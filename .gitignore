@@ -4,3 +4,8 @@
 .DS_Store
 ~$*
 ~$*
+
+# Godot-generierte Import-Metadaten für Bilder (werden beim Import neu erzeugt)
+*.png.import
+*.jpg.import
+*.svg.import
