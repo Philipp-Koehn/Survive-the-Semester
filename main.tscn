@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://c43dijje2s2yf" path="res://scenes/enemies/deadline.tscn" id="4_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bokvke5pm2kid" path="res://scenes/enemies/homework_stack.tscn" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://byns0oyfd6bii" path="res://scripts/enemies/WaveManager.cs" id="7_272bh"]
+[ext_resource type="PackedScene" uid="uid://2ifqq2lfu5gv" path="res://scenes/enemies/midterm_exam.tscn" id="8_kek77"]
+[ext_resource type="PackedScene" uid="uid://bxie0sxvicsiv" path="res://scenes/enemies/final_exam.tscn" id="9_4c57u"]
 
 [node name="Main" type="Node2D" unique_id=1386934817]
 
@@ -26,3 +28,8 @@ Spawner = NodePath("../EnemySpawner")
 BasicEnemy = ExtResource("2_h2yge")
 Deadline = ExtResource("4_1bvp3")
 HomeworkStack = ExtResource("6_7mycd")
+MidtermBoss = ExtResource("8_kek77")
+FinalBoss = ExtResource("9_4c57u")
+MidtermWeek = 2
+WeekDuration = 5.0
+TotalWeeks = 3

@@ -21,11 +21,7 @@ public partial class EnemySpawner : Node2D
 
 	public override void _Process(double delta)
 	{
-		if (_player == null || !IsInstanceValid(_player))
-		{
-			_player = GetTree().GetFirstNodeInGroup("player") as Node2D;
-			if (_player == null) return;
-		}
+		if (!EnsurePlayer()) return;
 
 		_timeLeft -= delta;
 		if (_timeLeft > 0) return;
@@ -33,25 +29,35 @@ public partial class EnemySpawner : Node2D
 
 		if (GetTree().GetNodesInGroup("enemies").Count >= MaxEnemies) return;
 
-		SpawnEnemy();
-	}
-
-	private void SpawnEnemy()
-	{
 		if (EnemyScenes.Length == 0)
 		{
 			GD.PushWarning("EnemySpawner: Keine Gegnertypen in EnemyScenes eingetragen!");
 			return;
 		}
 
-		// Zufälligen Gegnertyp aus der Liste wählen
 		PackedScene scene = EnemyScenes[_rng.RandiRange(0, EnemyScenes.Length - 1)];
-		if (scene == null) return;
+		SpawnScene(scene);
+	}
+
+	// Erzeugt einen Gegner der angegebenen Szene außerhalb des Bildschirms.
+	// Wird auch vom WaveManager für Bosse genutzt (ohne MaxEnemies-Grenze).
+	public Node2D SpawnScene(PackedScene scene)
+	{
+		if (scene == null || !EnsurePlayer()) return null;
 
 		var enemy = scene.Instantiate<Node2D>();
 		GetParent().AddChild(enemy);
 
 		float angle = _rng.RandfRange(0f, Mathf.Tau);
 		enemy.GlobalPosition = _player.GlobalPosition + Vector2.FromAngle(angle) * SpawnDistance;
+		return enemy;
+	}
+
+	// Sucht den Spieler, falls er noch nicht bekannt ist
+	private bool EnsurePlayer()
+	{
+		if (_player == null || !IsInstanceValid(_player))
+			_player = GetTree().GetFirstNodeInGroup("player") as Node2D;
+		return _player != null;
 	}
 }

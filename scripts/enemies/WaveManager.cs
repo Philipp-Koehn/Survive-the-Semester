@@ -2,17 +2,22 @@ using Godot;
 using System.Collections.Generic;
 
 // Steuert den Ablauf des Semesters: Alle WeekDuration Sekunden beginnt eine neue Woche.
-// Mit jeder Woche spawnen Gegner schneller und neue Gegnertypen kommen dazu.
+// Mit jeder Woche spawnen Gegner schneller, neue Gegnertypen kommen dazu,
+// in bestimmten Wochen erscheinen Prüfungs-Bosse.
 public partial class WaveManager : Node
 {
-	// Signale, damit z. B. die UI (Fabian) die aktuelle Woche anzeigen kann
+	// Signale, z. B. für die UI (Fabian)
 	[Signal] public delegate void WeekChangedEventHandler(int week);
+	[Signal] public delegate void BossSpawnedEventHandler(Boss boss);
 	[Signal] public delegate void SemesterFinishedEventHandler();
 
 	[Export] public EnemySpawner Spawner;
 	[Export] public PackedScene BasicEnemy;
 	[Export] public PackedScene Deadline;
 	[Export] public PackedScene HomeworkStack;
+	[Export] public PackedScene MidtermBoss;      // Zwischenprüfung
+	[Export] public PackedScene FinalBoss;        // Endklausur (letzte Woche)
+	[Export] public int MidtermWeek = 7;
 
 	[Export] public double WeekDuration = 30.0;   // Sekunden pro Woche
 	[Export] public int TotalWeeks = 14;
@@ -24,6 +29,7 @@ public partial class WaveManager : Node
 
 	private double _timeLeft;
 	private bool _finished;
+	private bool _finalBossAlive;
 
 	public override void _Ready()
 	{
@@ -33,7 +39,9 @@ public partial class WaveManager : Node
 			_finished = true;
 			return;
 		}
-		StartWeek(1);
+		// Woche 1 startet im ersten Frame, wenn alle Nodes bereit sind
+		CurrentWeek = 0;
+		_timeLeft = 0;
 	}
 
 	public override void _Process(double delta)
@@ -43,12 +51,16 @@ public partial class WaveManager : Node
 		_timeLeft -= delta;
 		if (_timeLeft > 0) return;
 
-		if (CurrentWeek >= TotalWeeks)
+		if (CurrentWeek < TotalWeeks)
 		{
-			FinishSemester();
-			return;
+			StartWeek(CurrentWeek + 1);
 		}
-		StartWeek(CurrentWeek + 1);
+		else if (!_finalBossAlive)
+		{
+			// Nur falls keine Endklausur eingetragen ist: nach Ablauf der letzten Woche fertig
+			FinishSemester();
+		}
+		// Sonst: warten, bis die Endklausur besiegt ist
 	}
 
 	private void StartWeek(int week)
@@ -61,6 +73,11 @@ public partial class WaveManager : Node
 
 		GD.Print($"Woche {week} beginnt (Spawn alle {Spawner.SpawnInterval:0.00} s)");
 		EmitSignal(SignalName.WeekChanged, week);
+
+		if (week == MidtermWeek)
+			SpawnBoss(MidtermBoss, false);
+		if (week == TotalWeeks)
+			SpawnBoss(FinalBoss, true);
 	}
 
 	// Welche Gegner in welcher Woche vorkommen. Mehrfach eingetragen = häufiger.
@@ -77,8 +94,31 @@ public partial class WaveManager : Node
 		return list.ToArray();
 	}
 
+	private void SpawnBoss(PackedScene scene, bool isFinal)
+	{
+		if (scene == null) return;
+
+		var boss = Spawner.SpawnScene(scene) as Boss;
+		if (boss == null) return;
+
+		EmitSignal(SignalName.BossSpawned, boss);
+
+		if (isFinal)
+		{
+			_finalBossAlive = true;
+			boss.Died += OnFinalBossDied;
+		}
+	}
+
+	private void OnFinalBossDied(Enemy enemy)
+	{
+		_finalBossAlive = false;
+		FinishSemester();
+	}
+
 	private void FinishSemester()
 	{
+		if (_finished) return;
 		_finished = true;
 		Spawner.SetProcess(false); // keine neuen Gegner mehr
 		GD.Print("Semester geschafft!");

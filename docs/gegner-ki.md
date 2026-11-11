@@ -256,3 +256,48 @@
 ### Offene Punkte
 - Boss automatisch über den WaveManager spawnen (Woche 7).
 - Endklausur als zweiter Boss in Woche 14, Semester endet erst nach ihrem Sieg.
+
+## 8. Bosse im Semesterablauf
+
+**Datum:** 11.11.2026
+**Dateien:** `scripts/enemies/WaveManager.cs`, `scripts/enemies/EnemySpawner.cs`,
+`scripts/enemies/Boss.cs`, `scenes/enemies/final_exam.tscn`, `main.tscn`
+
+### Umsetzung
+- Der `WaveManager` spawnt in Woche 7 (`MidtermWeek`) die **Zwischenprüfung**
+  und in der letzten Woche die **Endklausur** (`MidtermBoss`, `FinalBoss`).
+- Das Semester endet erst, wenn die Endklausur besiegt ist. Dafür verbindet der
+  WaveManager sich mit ihrem `Died`-Signal.
+- Neues Signal `BossSpawned(Boss boss)`, damit die UI z. B. eine Boss-Lebensleiste
+  einblenden und mit `HealthChanged` verbinden kann.
+- `EnemySpawner` hat eine öffentliche Methode `SpawnScene(PackedScene)`, über die
+  der WaveManager Bosse außerhalb des Bildschirms erzeugt (ohne `MaxEnemies`-Grenze).
+- Woche 1 startet jetzt im ersten Frame statt in `_Ready()`, damit beim Spawnen
+  alle Nodes bereit sind.
+- `final_exam.tscn` ist eine geerbte Szene der Zwischenprüfung: 400 HP, Speed 80,
+  Kontaktschaden 20, ruft alle 5 s vier Standard-Gegner, Scale 1.5, Hitbox-Radius 95.
+
+### Designentscheidungen
+- **Sieg an den Endboss gekoppelt:** Das Semester ist erst „geschafft“, wenn die
+  Klausur bestanden ist. Zeit überleben allein reicht nicht.
+- **Endklausur als Platzhalter:** Später wird sie durch einen eigenen Endboss
+  (Professor mit Projektilen) ersetzt. Im WaveManager muss dann nur die Szene
+  bei `FinalBoss` getauscht werden.
+- **Testwerte im Inspektor statt im Code:** Für den Test wurden `WeekDuration = 5`,
+  `TotalWeeks = 3` und `MidtermWeek = 2` gesetzt und danach zurückgestellt.
+
+### Test
+- Ergebnis: Woche 2 Zwischenprüfung, Woche 3 Endklausur, nach deren Sieg
+  „Endklausur: 0/400 HP“, „Endklausur bestanden!“ und „Semester geschafft!“
+  in dieser Reihenfolge, danach keine neuen Gegner mehr.
+- Beobachtung: Mit beiden Bossen gleichzeitig wird es sehr voll. Im echten Ablauf
+  liegen sieben Wochen dazwischen. Feinabstimmung folgt mit dem echten Spieler.
+
+### Probleme & Lösungen
+- Bosse erschienen zunächst nicht, weil `MidtermBoss`/`FinalBoss` im Inspektor
+  leer waren und `TotalWeeks` nicht übernommen wurde.
+  → Felder zugewiesen, Werte mit Enter bestätigt und gespeichert.
+- „Semester geschafft!“ erschien vor der letzten HP-Meldung des Bosses.
+  → `Boss.TakeDamage` meldet jetzt zuerst die neuen HP und nimmt erst danach Schaden.
+- Build-Fehler „} erwartet“ nach dem Ersetzen der Methode: Die schließende
+  Klammer der Klasse fehlte. → Klammer ergänzt.
