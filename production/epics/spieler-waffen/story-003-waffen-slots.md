@@ -1,12 +1,12 @@
 # Story 003: Waffen-Slots und Waffenwechsel
 
 > **Epic**: spieler-waffen
-> **Status**: Ready
+> **Status**: Complete
 > **Layer**: Feature
 > **Type**: Logic
 > **Estimate**: M
 > **Manifest Version**: N/A (minimal — no control manifest)
-> **Last Updated**: —
+> **Last Updated**: 2026-11-11
 
 ## Context
 
@@ -52,10 +52,11 @@
 ## Files
 
 - `scripts/Player/WeaponInventory.cs`
-- `scripts/Player/Weapons/` (AoE-Waffe)
-- `tests/unit/spieler/weapon_inventory_test.cs`
-
----
+- `scripts/Player/Weapons/Weapon.cs` (AoE-Typ, IsActive)
+- `scripts/Player/PlayerController.cs` (TakeDamage-Platzhalter bis Story 005)
+- `scenes/Player/PlayerController.tscn` (WeaponInventory mit Stift)
+- `scenes/Player/Weapons/Calculator.tscn` (Taschenrechner, AoE)
+- `project.godot` (Eingaben weapon_1 bis weapon_4, weapon_next, weapon_prev)
 
 ## QA Test Cases
 
@@ -78,3 +79,16 @@
 
 - Depends on: `production/epics/spieler-waffen/story-002-startwaffe.md`
 - Unlocks: `production/epics/spieler-waffen/story-004-upgrade-auswahl.md`
+
+---
+
+## Completion Notes
+**Completed**: 2026-11-11
+**Criteria**: 6/6 passing (Slots, Wechsel 1-4 und Mausrad, Typen Einzelziel und Flächenschaden, erkennbar über Konsole, Abklingzeit bleibt beim Wechsel erhalten)
+**Deviations**:
+- Nur die aktive Waffe schießt (Entscheidung zur Auslegung von „aktive Waffe“).
+- Taste 9 ist ein temporärer Test-Hook, um Slot-Regeln im Spiel zu prüfen. Wird mit Story 004 entfernt.
+- `PlayerController.TakeDamage` ist nur ein leerer Platzhalter bis Story 005.
+- `main.tscn` und `project.godot` sind mit der Story committet, aber nicht unter `## Files` (Eingaben und Hauptszene mit Mert abgestimmt).
+**Test Evidence**: waived at qa.level minimal
+**Reviewed by**: self, no independent review

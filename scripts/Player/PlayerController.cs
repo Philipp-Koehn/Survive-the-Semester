@@ -20,6 +20,15 @@ public partial class PlayerController : CharacterBody2D
         AddToGroup("player");
     }
 
+    /// <summary>
+    /// Enemies call this on contact (see docs/gegner-ki.md). Placeholder until story 005
+    /// adds health and shield; for now the call is accepted and ignored.
+    /// </summary>
+    /// <param name="amount">Damage the enemy deals.</param>
+    public void TakeDamage(int amount)
+    {
+    }
+
     /// <inheritdoc/>
     public override void _PhysicsProcess(double delta)
     {

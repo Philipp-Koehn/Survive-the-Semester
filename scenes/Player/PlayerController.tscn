@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/Player/PlayerController.cs" id="1_script"]
 [ext_resource type="Texture2D" path="res://icon.svg" id="2_icon"]
 [ext_resource type="PackedScene" path="res://scenes/Player/Weapons/Pen.tscn" id="3_pen"]
+[ext_resource type="Script" path="res://scripts/Player/WeaponInventory.cs" id="4_inventory"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 28.0
@@ -20,4 +21,7 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="Pen" parent="." instance=ExtResource("3_pen")]
+[node name="WeaponInventory" type="Node2D" parent="."]
+script = ExtResource("4_inventory")
+
+[node name="Pen" parent="WeaponInventory" instance=ExtResource("3_pen")]
