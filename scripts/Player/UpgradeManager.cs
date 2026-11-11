@@ -74,7 +74,8 @@ public partial class UpgradeManager : Node
     /// <summary>Starts a level-up: offers options and pauses. Does nothing when no option exists.</summary>
     public void TriggerLevelUp()
     {
-        if (IsChoosing)
+        // No level-up while choosing, and none after death: the run is over and the game is paused.
+        if (IsChoosing || GetNode<PlayerStats>("../PlayerStats").IsDead)
         {
             return;
         }

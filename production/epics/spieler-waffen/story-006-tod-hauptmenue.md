@@ -1,12 +1,12 @@
 # Story 006: Tod und Rückkehr ins Hauptmenü
 
 > **Epic**: spieler-waffen
-> **Status**: Ready
+> **Status**: Complete
 > **Layer**: Feature
 > **Type**: Integration
 > **Estimate**: M
 > **Manifest Version**: N/A (minimal — no control manifest)
-> **Last Updated**: —
+> **Last Updated**: 2026-11-11
 
 ## Context
 
@@ -50,11 +50,9 @@
 
 ## Files
 
-- `scripts/Player/PlayerController.cs`
 - `scripts/Player/RunManager.cs`
-- `tests/integration/spieler/death_flow_test.cs`
-
----
+- `scripts/Player/UpgradeManager.cs` (kein Level-Up nach dem Tod)
+- `scenes/Player/PlayerController.tscn` (RunManager-Knoten)
 
 ## QA Test Cases
 
@@ -77,3 +75,15 @@
 
 - Depends on: `production/epics/spieler-waffen/story-005-spieler-werte.md`
 - Unlocks: None
+
+---
+
+## Completion Notes
+**Completed**: 2026-11-11
+**Criteria**: 5/5 passing (keine deferred)
+**Deviations**:
+- Der Wechsel zu einer echten Hauptmenü-Szene ist noch nicht getestet, weil es sie nicht gibt (Fabian). Geprüft wurde nur mit einer temporären Szene. Nach dem Merge prüfen, sobald `MainMenuScenePath` gesetzt ist.
+- Ohne Menü-Szene startet der Run nach dem Tod neu (Entscheidung, damit das Spiel testbar bleibt).
+- `docs/spieler-schnittstellen.md` (Doku für Fabian) kam mit dieser Story dazu.
+**Test Evidence**: waived at qa.level minimal
+**Reviewed by**: self, no independent review
