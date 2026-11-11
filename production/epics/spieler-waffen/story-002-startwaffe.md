@@ -1,12 +1,12 @@
 # Story 002: Startwaffe mit Grundschaden
 
 > **Epic**: spieler-waffen
-> **Status**: Ready
+> **Status**: In Progress
 > **Layer**: Feature
 > **Type**: Logic
 > **Estimate**: M
 > **Manifest Version**: N/A (minimal — no control manifest)
-> **Last Updated**: —
+> **Last Updated**: 2026-11-11
 
 ## Context
 
@@ -53,9 +53,7 @@
 
 - `scripts/Player/Weapons/Weapon.cs`
 - `scenes/Player/Weapons/Pen.tscn`
-- `tests/unit/spieler/weapon_test.cs`
-
----
+- `scenes/Player/PlayerController.tscn`
 
 ## QA Test Cases
 
