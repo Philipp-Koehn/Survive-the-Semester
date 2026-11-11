@@ -13,20 +13,22 @@ public partial class PlayerController : CharacterBody2D
     [Export]
     public float MoveSpeed { get; set; } = 300.0f;
 
+    /// <summary>Health, shield, damage and crit values of the player.</summary>
+    public PlayerStats Stats { get; private set; }
+
     /// <inheritdoc/>
     public override void _Ready()
     {
         // Gegner finden den Spieler über diese Group (siehe docs/gegner-ki.md).
         AddToGroup("player");
+        Stats = GetNode<PlayerStats>("PlayerStats");
     }
 
-    /// <summary>
-    /// Enemies call this on contact (see docs/gegner-ki.md). Placeholder until story 005
-    /// adds health and shield; for now the call is accepted and ignored.
-    /// </summary>
+    /// <summary>Enemies call this on contact (see docs/gegner-ki.md). Forwards to <see cref="PlayerStats.TakeDamage"/>.</summary>
     /// <param name="amount">Damage the enemy deals.</param>
     public void TakeDamage(int amount)
     {
+        Stats.TakeDamage(amount);
     }
 
     /// <inheritdoc/>

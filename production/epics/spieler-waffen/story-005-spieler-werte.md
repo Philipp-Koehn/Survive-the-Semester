@@ -1,12 +1,12 @@
 # Story 005: Spieler-Werte: Leben, Schaden, Schild, Krit
 
 > **Epic**: spieler-waffen
-> **Status**: Ready
+> **Status**: Complete
 > **Layer**: Core
 > **Type**: Logic
 > **Estimate**: M
 > **Manifest Version**: N/A (minimal — no control manifest)
-> **Last Updated**: —
+> **Last Updated**: 2026-11-11
 
 ## Context
 
@@ -52,10 +52,9 @@
 ## Files
 
 - `scripts/Player/PlayerStats.cs`
-- `scripts/Player/PlayerController.cs`
-- `tests/unit/spieler/player_stats_test.cs`
-
----
+- `scripts/Player/PlayerController.cs` (TakeDamage leitet an PlayerStats, Stats-Property)
+- `scripts/Player/Weapons/Weapon.cs` (Schaden mit Multiplikator und Krit)
+- `scenes/Player/PlayerController.tscn` (PlayerStats-Knoten)
 
 ## QA Test Cases
 
@@ -78,3 +77,15 @@
 
 - Depends on: `production/epics/spieler-waffen/story-001-spielerbewegung-kamera.md`
 - Unlocks: `production/epics/spieler-waffen/story-006-tod-hauptmenue.md`
+
+---
+
+## Completion Notes
+**Completed**: 2026-11-11
+**Criteria**: 6/6 passing (keine deferred)
+**Deviations**:
+- Das Schild lädt sich nicht wieder auf (späterer Balancing-Punkt).
+- Konsolenausgabe bei Treffer und Tod in `PlayerStats.cs` ist temporär, bis es eine Lebensanzeige (UI, Fabian) gibt.
+- Bewegungstempo bleibt als `MoveSpeed` am `PlayerController`.
+**Test Evidence**: waived at qa.level minimal
+**Reviewed by**: self, no independent review

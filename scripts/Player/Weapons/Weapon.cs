@@ -104,6 +104,7 @@ public partial class Weapon : Node2D
         Range *= UltimateRangeMultiplier;
     }
 
+    private PlayerStats _stats;
     private double _cooldownLeft;
     private double _flashLeft;
     private Vector2 _lastTargetGlobal;
@@ -191,12 +192,23 @@ public partial class Weapon : Node2D
         return nearest;
     }
 
+    // Hit damage with the player's damage multiplier and crit. Without a player it is the plain damage.
+    private int RollHitDamage()
+    {
+        if (_stats == null || !IsInstanceValid(_stats))
+        {
+            _stats = (GetTree().GetFirstNodeInGroup("player") as PlayerController)?.Stats;
+        }
+
+        return _stats?.RollDamage(Damage) ?? Damage;
+    }
+
     private void FireSingle(Node2D target)
     {
         // Enemies expose TakeDamage(int); see docs/gegner-ki.md.
         if (target.HasMethod("TakeDamage"))
         {
-            target.Call("TakeDamage", Damage);
+            target.Call("TakeDamage", RollHitDamage());
         }
 
         _lastTargetGlobal = target.GlobalPosition;
@@ -206,6 +218,8 @@ public partial class Weapon : Node2D
 
     private void FireArea()
     {
+        int hitDamage = RollHitDamage();
+
         foreach (Node node in GetTree().GetNodesInGroup("enemies"))
         {
             if (node is Node2D enemy
@@ -214,7 +228,7 @@ public partial class Weapon : Node2D
                 && GlobalPosition.DistanceTo(enemy.GlobalPosition) <= Range
                 && enemy.HasMethod("TakeDamage"))
             {
-                enemy.Call("TakeDamage", Damage);
+                enemy.Call("TakeDamage", hitDamage);
             }
         }
 
