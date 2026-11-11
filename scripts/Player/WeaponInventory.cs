@@ -22,6 +22,12 @@ public partial class WeaponInventory : Node2D
     /// <summary>Number of weapons currently in the slots.</summary>
     public int Count => _slots.Count;
 
+    /// <summary>True when every slot is taken.</summary>
+    public bool IsFull => _slots.Count >= MaxSlots;
+
+    /// <summary>The weapons in slot order.</summary>
+    public IReadOnlyList<Weapon> Weapons => _slots;
+
     /// <inheritdoc/>
     public override void _Ready()
     {
@@ -110,17 +116,5 @@ public partial class WeaponInventory : Node2D
         else if (@event.IsActionPressed("weapon_4")) Select(3);
         else if (@event.IsActionPressed("weapon_next")) SelectNext();
         else if (@event.IsActionPressed("weapon_prev")) SelectPrevious();
-        else if (@event.IsActionPressed("weapon_debug_add")) DebugAddCalculator();
-    }
-
-    // TEMPORARY test hook (key 9): adds the Taschenrechner through TryAddWeapon so the
-    // slot rules can be tried in the game. Remove when story 004 offers weapons on level-up.
-    private void DebugAddCalculator()
-    {
-        var calculator = GD.Load<PackedScene>("res://scenes/Player/Weapons/Calculator.tscn");
-        bool added = TryAddWeapon(calculator);
-        GD.Print(added
-            ? $"Test: Taschenrechner hinzugefügt ({Count}/{MaxSlots})"
-            : $"Test: alle {MaxSlots} Slots belegt, nichts hinzugefügt");
     }
 }

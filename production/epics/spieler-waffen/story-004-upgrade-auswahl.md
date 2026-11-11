@@ -1,12 +1,12 @@
 # Story 004: Upgrade-Auswahl pro Level
 
 > **Epic**: spieler-waffen
-> **Status**: Ready
+> **Status**: Complete
 > **Layer**: Feature
 > **Type**: Logic
 > **Estimate**: L
 > **Manifest Version**: N/A (minimal — no control manifest)
-> **Last Updated**: —
+> **Last Updated**: 2026-11-11
 
 ## Context
 
@@ -54,10 +54,11 @@
 ## Files
 
 - `scripts/Player/UpgradeManager.cs`
-- `scripts/Player/Weapons/` (Upgrade-Daten)
-- `tests/unit/spieler/upgrade_manager_test.cs`
-
----
+- `scripts/Player/Weapons/Weapon.cs` (Level, Upgrade, Ultimate)
+- `scripts/Player/WeaponInventory.cs` (IsFull, Weapons; Test-Hook von Story 003 entfernt)
+- `scenes/Player/PlayerController.tscn` (UpgradeManager mit Waffen-Pool)
+- `scenes/Player/Weapons/Laptop.tscn` (dritte Waffe)
+- `project.godot` (upgrade_pick_1 bis 3, debug_level_up)
 
 ## QA Test Cases
 
@@ -80,3 +81,16 @@
 
 - Depends on: `production/epics/spieler-waffen/story-003-waffen-slots.md`
 - Unlocks: None
+
+---
+
+## Completion Notes
+**Completed**: 2026-11-11
+**Criteria**: 8/8 passing (keine deferred)
+**Deviations**:
+- Level 1 bis 4 heißt: Start auf Level 1, drei Aufwertungen, dann das Ultimate (mit dir abgestimmt).
+- Die Regel „volle Slots bieten keine neue Waffe“ ist nur über einen temporären Selbsttest belegt, nicht von Hand (der Waffen-Pool hat nur 3 Waffen).
+- Taste 9 ist ein temporärer Level-Up-Auslöser, bis es ein XP-System gibt.
+- Die Auswahl erscheint nur in der Konsole, die Anzeige gehört Fabian.
+**Test Evidence**: waived at qa.level minimal
+**Reviewed by**: self, no independent review

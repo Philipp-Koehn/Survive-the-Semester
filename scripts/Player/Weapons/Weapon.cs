@@ -42,8 +42,67 @@ public partial class Weapon : Node2D
     [Export]
     public WeaponKind Kind { get; set; } = WeaponKind.SingleTarget;
 
+    /// <summary>Highest upgrade level. A weapon starts on level 1.</summary>
+    [Export]
+    public int MaxLevel { get; set; } = 4;
+
+    /// <summary>Extra damage gained per upgrade level.</summary>
+    [Export]
+    public int DamagePerLevel { get; set; } = 2;
+
+    /// <summary>Seconds taken off the cooldown per upgrade level.</summary>
+    [Export]
+    public double CooldownReductionPerLevel { get; set; } = 0.05;
+
+    /// <summary>The cooldown never drops below this many seconds.</summary>
+    [Export]
+    public double MinCooldown { get; set; } = 0.15;
+
+    /// <summary>Damage multiplier of the ultimate upgrade.</summary>
+    [Export]
+    public float UltimateDamageMultiplier { get; set; } = 2.0f;
+
+    /// <summary>Range multiplier of the ultimate upgrade.</summary>
+    [Export]
+    public float UltimateRangeMultiplier { get; set; } = 1.5f;
+
+    /// <summary>Current upgrade level, from 1 to <see cref="MaxLevel"/>.</summary>
+    public int Level { get; private set; } = 1;
+
+    /// <summary>True once the ultimate upgrade has been applied.</summary>
+    public bool HasUltimate { get; private set; }
+
+    /// <summary>True when no normal upgrade is left.</summary>
+    public bool IsMaxLevel => Level >= MaxLevel;
+
     /// <summary>True while this weapon is the one the player currently uses. Set by <see cref="WeaponInventory"/>.</summary>
     public bool IsActive { get; set; }
+
+    /// <summary>Raises the level by one: more damage, shorter cooldown. Does nothing on the maximum level.</summary>
+    public void LevelUp()
+    {
+        if (IsMaxLevel)
+        {
+            return;
+        }
+
+        Level++;
+        Damage += DamagePerLevel;
+        Cooldown = Mathf.Max(MinCooldown, Cooldown - CooldownReductionPerLevel);
+    }
+
+    /// <summary>Applies the ultimate upgrade once the weapon is on its maximum level.</summary>
+    public void ApplyUltimate()
+    {
+        if (!IsMaxLevel || HasUltimate)
+        {
+            return;
+        }
+
+        HasUltimate = true;
+        Damage = Mathf.RoundToInt(Damage * UltimateDamageMultiplier);
+        Range *= UltimateRangeMultiplier;
+    }
 
     private double _cooldownLeft;
     private double _flashLeft;

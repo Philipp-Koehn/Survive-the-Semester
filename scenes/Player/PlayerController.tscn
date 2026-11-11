@@ -4,6 +4,9 @@
 [ext_resource type="Texture2D" path="res://icon.svg" id="2_icon"]
 [ext_resource type="PackedScene" path="res://scenes/Player/Weapons/Pen.tscn" id="3_pen"]
 [ext_resource type="Script" path="res://scripts/Player/WeaponInventory.cs" id="4_inventory"]
+[ext_resource type="Script" path="res://scripts/Player/UpgradeManager.cs" id="5_upgrades"]
+[ext_resource type="PackedScene" path="res://scenes/Player/Weapons/Calculator.tscn" id="6_calc"]
+[ext_resource type="PackedScene" path="res://scenes/Player/Weapons/Laptop.tscn" id="7_laptop"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 28.0
@@ -25,3 +28,7 @@ shape = SubResource("CircleShape2D_body")
 script = ExtResource("4_inventory")
 
 [node name="Pen" parent="WeaponInventory" instance=ExtResource("3_pen")]
+
+[node name="UpgradeManager" type="Node" parent="."]
+script = ExtResource("5_upgrades")
+WeaponPool = [ExtResource("3_pen"), ExtResource("6_calc"), ExtResource("7_laptop")]
