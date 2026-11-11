@@ -26,4 +26,4 @@
 
 ## Sign-off
 
-Freigabe durch: ______ (Name, Datum)
+Freigabe durch: philipp,11.11.2026______ (Name, Datum)

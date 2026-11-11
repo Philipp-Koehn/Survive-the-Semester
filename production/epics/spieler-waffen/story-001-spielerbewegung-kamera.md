@@ -1,12 +1,12 @@
 # Story 001: Spielerbewegung und Kamera
 
 > **Epic**: spieler-waffen
-> **Status**: Ready
+> **Status**: Complete
 > **Layer**: Core
 > **Type**: Visual/Feel
 > **Estimate**: S
 > **Manifest Version**: N/A (minimal — no control manifest)
-> **Last Updated**: —
+> **Last Updated**: 2026-11-11
 
 ## Context
 
@@ -76,3 +76,12 @@
 
 - Depends on: None
 - Unlocks: `production/epics/spieler-waffen/story-002-startwaffe.md`, `production/epics/spieler-waffen/story-005-spieler-werte.md`
+
+---
+
+## Completion Notes
+**Completed**: 2026-11-11
+**Criteria**: 5/5 passing (keine deferred)
+**Deviations**: `main.tscn` und `project.godot` (Input-Map) wurden mit der Story committet, stehen aber nicht unter `## Files` (mit Mert abgestimmt). In `story-001-evidence.md` sind die Punkte unter „Noch offen“ nicht abgehakt, der Sign-off ist eingetragen.
+**Test Evidence**: `production/qa/evidence/story-001-spieler-arena.png` und `story-001-evidence.md`
+**Reviewed by**: self, no independent review

@@ -1,7 +1,7 @@
 # Story 002: Startwaffe mit Grundschaden
 
 > **Epic**: spieler-waffen
-> **Status**: In Progress
+> **Status**: Complete
 > **Layer**: Feature
 > **Type**: Logic
 > **Estimate**: M
@@ -76,3 +76,12 @@
 
 - Depends on: `production/epics/spieler-waffen/story-001-spielerbewegung-kamera.md`
 - Unlocks: `production/epics/spieler-waffen/story-003-waffen-slots.md`
+
+---
+
+## Completion Notes
+**Completed**: 2026-11-11
+**Criteria**: 5/5 passing (keine deferred)
+**Deviations**: `main.tscn` und `project.godot` wurden mit der Story committet, stehen aber nicht unter `## Files` (mit Mert abgestimmt). Der 0,08-s-Schussblitz ist auf keinem retained Bild erfasst.
+**Test Evidence**: waived at qa.level minimal
+**Reviewed by**: self, no independent review
