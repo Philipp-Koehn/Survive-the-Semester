@@ -1,7 +1,8 @@
 using Godot;
 
 // Erzeugt in regelmäßigen Abständen Gegner auf einem Kreis um den Spieler,
-// außerhalb des sichtbaren Bereichs. Der Gegnertyp wird zufällig aus einer Liste gewählt.
+// außerhalb des sichtbaren Bereichs, aber immer innerhalb der Arena.
+// Der Gegnertyp wird zufällig aus einer Liste gewählt.
 public partial class EnemySpawner : Node2D
 {
 	[Export] public PackedScene[] EnemyScenes = new PackedScene[0]; // mögliche Gegnertypen
@@ -47,10 +48,28 @@ public partial class EnemySpawner : Node2D
 
 		var enemy = scene.Instantiate<Node2D>();
 		GetParent().AddChild(enemy);
-
-		float angle = _rng.RandfRange(0f, Mathf.Tau);
-		enemy.GlobalPosition = _player.GlobalPosition + Vector2.FromAngle(angle) * SpawnDistance;
+		enemy.GlobalPosition = FindSpawnPosition();
 		return enemy;
+	}
+
+	// Sucht einen Punkt im Abstand SpawnDistance zum Spieler, der in der Arena liegt
+	private Vector2 FindSpawnPosition()
+	{
+		var arena = GetTree().GetFirstNodeInGroup("arena") as ArenaFloor;
+		const float margin = 100f; // Abstand zu den Wänden
+
+		for (int i = 0; i < 10; i++)
+		{
+			float angle = _rng.RandfRange(0f, Mathf.Tau);
+			Vector2 pos = _player.GlobalPosition + Vector2.FromAngle(angle) * SpawnDistance;
+			if (arena == null || arena.IsInside(pos, margin))
+				return pos;
+		}
+
+		// Kein passender Punkt gefunden (Spieler steht in einer Ecke): in die Arena zurückschieben
+		Vector2 fallback = _player.GlobalPosition
+						 + Vector2.FromAngle(_rng.RandfRange(0f, Mathf.Tau)) * SpawnDistance;
+		return arena.ClampInside(fallback, margin);
 	}
 
 	// Sucht den Spieler, falls er noch nicht bekannt ist

@@ -16,7 +16,6 @@
 script = ExtResource("1_1bvp3")
 
 [node name="TestPlayer" parent="." unique_id=895673670 instance=ExtResource("1_0xm2m")]
-AttackDamage = 25
 
 [node name="EnemySpawner" type="Node2D" parent="." unique_id=2135026305]
 script = ExtResource("2_0xm2m")
@@ -30,6 +29,3 @@ Deadline = ExtResource("4_1bvp3")
 HomeworkStack = ExtResource("6_7mycd")
 MidtermBoss = ExtResource("8_kek77")
 FinalBoss = ExtResource("9_4c57u")
-MidtermWeek = 2
-WeekDuration = 5.0
-TotalWeeks = 3

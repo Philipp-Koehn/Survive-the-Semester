@@ -301,3 +301,37 @@
   → `Boss.TakeDamage` meldet jetzt zuerst die neuen HP und nimmt erst danach Schaden.
 - Build-Fehler „} erwartet“ nach dem Ersetzen der Methode: Die schließende
   Klammer der Klasse fehlte. → Klammer ergänzt.
+
+## 9. Arena-Begrenzung (Leveldesign)
+
+**Datum:** 11.11.2026
+**Dateien:** `scripts/level/ArenaFloor.cs`, `scripts/enemies/EnemySpawner.cs`
+
+### Umsetzung
+- `ArenaFloor` erzeugt beim Start einen `StaticBody2D` „Walls“ mit vier
+  rechteckigen Kollisionsformen direkt außerhalb der Arena (Dicke `WallThickness`, 64 px).
+- Kollision und Zeichnung nutzen dieselben Rechtecke (`GetWallRects`), damit
+  sichtbare und tatsächliche Wand immer übereinstimmen.
+- Die Arena ist in der Group `"arena"` und bietet `Bounds`, `IsInside()` und
+  `ClampInside()` für andere Systeme an.
+- Der `EnemySpawner` sucht jetzt bis zu 10 zufällige Punkte im Abstand
+  `SpawnDistance` und nimmt den ersten, der mindestens 100 px innerhalb der Arena liegt.
+  Findet er keinen (Spieler in einer Ecke), wird der Punkt in die Arena zurückgeschoben.
+
+### Designentscheidungen
+- **Wände per Code statt von Hand platziert:** Die Wände passen sich automatisch an
+  `ArenaSize` an. Für jeden Ort kann die Arenagröße im Inspektor geändert werden.
+- **Spawn nur innerhalb der Arena:** Ohne diese Prüfung wären Gegner hinter der Wand
+  entstanden und dort hängen geblieben.
+
+### Test
+- Spieler kann die Arena nicht verlassen. In der Ecke stehend spawnen alle Gegner
+  innerhalb der Arena.
+
+### Probleme & Lösungen
+- Beim Ersetzen von `SpawnScene` wurde versehentlich die ganze Datei überschrieben
+  (Build-Fehler „public-Modifizierer nicht gültig“). → Datei komplett neu eingefügt.
+- Grauer Streifen zwischen Boden und Wand: 4000 px ergeben 62,5 Kacheln (nur 62
+  gezeichnet), und der Rahmen wurde mittig auf der Linie gezeichnet.
+  → Kachelanzahl aufrunden und am Rand abschneiden, Wände als gefüllte Rechtecke
+  an der Position der Kollision zeichnen.
