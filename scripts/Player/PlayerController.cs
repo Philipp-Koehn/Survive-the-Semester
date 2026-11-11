@@ -14,6 +14,13 @@ public partial class PlayerController : CharacterBody2D
     public float MoveSpeed { get; set; } = 300.0f;
 
     /// <inheritdoc/>
+    public override void _Ready()
+    {
+        // Gegner finden den Spieler über diese Group (siehe docs/gegner-ki.md).
+        AddToGroup("player");
+    }
+
+    /// <inheritdoc/>
     public override void _PhysicsProcess(double delta)
     {
         // GetVector returns a vector of length <= 1, so diagonals are not faster.
