@@ -15,6 +15,10 @@ run/main_scene="uid://cr3480hmyljsh"
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SoundManager="*uid://bcxwemyyjbxvb"
+
 [display]
 
 window/stretch/mode="canvas_items"
