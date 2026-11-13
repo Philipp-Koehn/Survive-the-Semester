@@ -1,7 +1,8 @@
 using Godot;
 
 // Erzeugt in regelmäßigen Abständen Gegner auf einem Kreis um den Spieler,
-// außerhalb des sichtbaren Bereichs. Der Gegnertyp wird zufällig aus einer Liste gewählt.
+// außerhalb des sichtbaren Bereichs, aber immer innerhalb der Arena.
+// Der Gegnertyp wird zufällig aus einer Liste gewählt.
 public partial class EnemySpawner : Node2D
 {
 	[Export] public PackedScene[] EnemyScenes = new PackedScene[0]; // mögliche Gegnertypen
@@ -21,11 +22,7 @@ public partial class EnemySpawner : Node2D
 
 	public override void _Process(double delta)
 	{
-		if (_player == null || !IsInstanceValid(_player))
-		{
-			_player = GetTree().GetFirstNodeInGroup("player") as Node2D;
-			if (_player == null) return;
-		}
+		if (!EnsurePlayer()) return;
 
 		_timeLeft -= delta;
 		if (_timeLeft > 0) return;
@@ -33,25 +30,53 @@ public partial class EnemySpawner : Node2D
 
 		if (GetTree().GetNodesInGroup("enemies").Count >= MaxEnemies) return;
 
-		SpawnEnemy();
-	}
-
-	private void SpawnEnemy()
-	{
 		if (EnemyScenes.Length == 0)
 		{
 			GD.PushWarning("EnemySpawner: Keine Gegnertypen in EnemyScenes eingetragen!");
 			return;
 		}
 
-		// Zufälligen Gegnertyp aus der Liste wählen
 		PackedScene scene = EnemyScenes[_rng.RandiRange(0, EnemyScenes.Length - 1)];
-		if (scene == null) return;
+		SpawnScene(scene);
+	}
+
+	// Erzeugt einen Gegner der angegebenen Szene außerhalb des Bildschirms.
+	// Wird auch vom WaveManager für Bosse genutzt (ohne MaxEnemies-Grenze).
+	public Node2D SpawnScene(PackedScene scene)
+	{
+		if (scene == null || !EnsurePlayer()) return null;
 
 		var enemy = scene.Instantiate<Node2D>();
 		GetParent().AddChild(enemy);
+		enemy.GlobalPosition = FindSpawnPosition();
+		return enemy;
+	}
 
-		float angle = _rng.RandfRange(0f, Mathf.Tau);
-		enemy.GlobalPosition = _player.GlobalPosition + Vector2.FromAngle(angle) * SpawnDistance;
+	// Sucht einen Punkt im Abstand SpawnDistance zum Spieler, der in der Arena liegt
+	private Vector2 FindSpawnPosition()
+	{
+		var arena = GetTree().GetFirstNodeInGroup("arena") as ArenaFloor;
+		const float margin = 100f; // Abstand zu den Wänden
+
+		for (int i = 0; i < 10; i++)
+		{
+			float angle = _rng.RandfRange(0f, Mathf.Tau);
+			Vector2 pos = _player.GlobalPosition + Vector2.FromAngle(angle) * SpawnDistance;
+			if (arena == null || arena.IsInside(pos, margin))
+				return pos;
+		}
+
+		// Kein passender Punkt gefunden (Spieler steht in einer Ecke): in die Arena zurückschieben
+		Vector2 fallback = _player.GlobalPosition
+						 + Vector2.FromAngle(_rng.RandfRange(0f, Mathf.Tau)) * SpawnDistance;
+		return arena.ClampInside(fallback, margin);
+	}
+
+	// Sucht den Spieler, falls er noch nicht bekannt ist
+	private bool EnsurePlayer()
+	{
+		if (_player == null || !IsInstanceValid(_player))
+			_player = GetTree().GetFirstNodeInGroup("player") as Node2D;
+		return _player != null;
 	}
 }

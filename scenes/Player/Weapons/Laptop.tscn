@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/Player/Weapons/Weapon.cs" id="1_weapon"]
+
+[node name="Laptop" type="Node2D"]
+script = ExtResource("1_weapon")
+WeaponName = "Laptop"
+Damage = 12
+Cooldown = 1.6
+Range = 350.0

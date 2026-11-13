@@ -53,13 +53,15 @@ public partial class Boss : Enemy
 	public override void TakeDamage(int amount)
 	{
 		if (Health <= 0) return;
-		base.TakeDamage(amount);
 
-		int hp = Mathf.Max(Health, 0);
+		// Erst melden, dann Schaden nehmen, damit UI und Ausgabe
+		// den Treffer vor dem Tod mitbekommen
+		int hp = Mathf.Max(Health - amount, 0);
 		EmitSignal(SignalName.HealthChanged, hp, MaxHealth);
 		GD.Print($"{BossName}: {hp}/{MaxHealth} HP");
-
 		if (hp == 0)
 			GD.Print($"{BossName} bestanden!");
+
+		base.TakeDamage(amount);
 	}
 }

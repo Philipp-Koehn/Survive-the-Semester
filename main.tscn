@@ -1,20 +1,21 @@
 [gd_scene format=3 uid="uid://cr3480hmyljsh"]
 
-[ext_resource type="PackedScene" uid="uid://dult7piwq1xeg" path="res://scenes/test/test_player.tscn" id="1_0xm2m"]
+[ext_resource type="PackedScene" path="res://scenes/Player/PlayerController.tscn" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://f8mov6fg8ie5" path="res://scripts/level/ArenaFloor.cs" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://dgysb6aimfd6a" path="res://scripts/enemies/EnemySpawner.cs" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://c43dijje2s2yf" path="res://scenes/enemies/deadline.tscn" id="4_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://bokvke5pm2kid" path="res://scenes/enemies/homework_stack.tscn" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://byns0oyfd6bii" path="res://scripts/enemies/WaveManager.cs" id="7_272bh"]
+[ext_resource type="PackedScene" uid="uid://2ifqq2lfu5gv" path="res://scenes/enemies/midterm_exam.tscn" id="8_kek77"]
+[ext_resource type="PackedScene" uid="uid://bxie0sxvicsiv" path="res://scenes/enemies/final_exam.tscn" id="9_4c57u"]
 
 [node name="Main" type="Node2D" unique_id=1386934817]
 
 [node name="ArenaFloor" type="Node2D" parent="." unique_id=831511170]
 script = ExtResource("1_1bvp3")
 
-[node name="TestPlayer" parent="." unique_id=895673670 instance=ExtResource("1_0xm2m")]
-AttackDamage = 25
+[node name="PlayerController" parent="." instance=ExtResource("1_0xm2m")]
 
 [node name="EnemySpawner" type="Node2D" parent="." unique_id=2135026305]
 script = ExtResource("2_0xm2m")
@@ -26,3 +27,5 @@ Spawner = NodePath("../EnemySpawner")
 BasicEnemy = ExtResource("2_h2yge")
 Deadline = ExtResource("4_1bvp3")
 HomeworkStack = ExtResource("6_7mycd")
+MidtermBoss = ExtResource("8_kek77")
+FinalBoss = ExtResource("9_4c57u")

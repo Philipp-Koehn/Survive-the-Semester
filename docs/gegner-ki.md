@@ -256,3 +256,82 @@
 ### Offene Punkte
 - Boss automatisch über den WaveManager spawnen (Woche 7).
 - Endklausur als zweiter Boss in Woche 14, Semester endet erst nach ihrem Sieg.
+
+## 8. Bosse im Semesterablauf
+
+**Datum:** 11.11.2026
+**Dateien:** `scripts/enemies/WaveManager.cs`, `scripts/enemies/EnemySpawner.cs`,
+`scripts/enemies/Boss.cs`, `scenes/enemies/final_exam.tscn`, `main.tscn`
+
+### Umsetzung
+- Der `WaveManager` spawnt in Woche 7 (`MidtermWeek`) die **Zwischenprüfung**
+  und in der letzten Woche die **Endklausur** (`MidtermBoss`, `FinalBoss`).
+- Das Semester endet erst, wenn die Endklausur besiegt ist. Dafür verbindet der
+  WaveManager sich mit ihrem `Died`-Signal.
+- Neues Signal `BossSpawned(Boss boss)`, damit die UI z. B. eine Boss-Lebensleiste
+  einblenden und mit `HealthChanged` verbinden kann.
+- `EnemySpawner` hat eine öffentliche Methode `SpawnScene(PackedScene)`, über die
+  der WaveManager Bosse außerhalb des Bildschirms erzeugt (ohne `MaxEnemies`-Grenze).
+- Woche 1 startet jetzt im ersten Frame statt in `_Ready()`, damit beim Spawnen
+  alle Nodes bereit sind.
+- `final_exam.tscn` ist eine geerbte Szene der Zwischenprüfung: 400 HP, Speed 80,
+  Kontaktschaden 20, ruft alle 5 s vier Standard-Gegner, Scale 1.5, Hitbox-Radius 95.
+
+### Designentscheidungen
+- **Sieg an den Endboss gekoppelt:** Das Semester ist erst „geschafft“, wenn die
+  Klausur bestanden ist. Zeit überleben allein reicht nicht.
+- **Endklausur als Platzhalter:** Später wird sie durch einen eigenen Endboss
+  (Professor mit Projektilen) ersetzt. Im WaveManager muss dann nur die Szene
+  bei `FinalBoss` getauscht werden.
+- **Testwerte im Inspektor statt im Code:** Für den Test wurden `WeekDuration = 5`,
+  `TotalWeeks = 3` und `MidtermWeek = 2` gesetzt und danach zurückgestellt.
+
+### Test
+- Ergebnis: Woche 2 Zwischenprüfung, Woche 3 Endklausur, nach deren Sieg
+  „Endklausur: 0/400 HP“, „Endklausur bestanden!“ und „Semester geschafft!“
+  in dieser Reihenfolge, danach keine neuen Gegner mehr.
+- Beobachtung: Mit beiden Bossen gleichzeitig wird es sehr voll. Im echten Ablauf
+  liegen sieben Wochen dazwischen. Feinabstimmung folgt mit dem echten Spieler.
+
+### Probleme & Lösungen
+- Bosse erschienen zunächst nicht, weil `MidtermBoss`/`FinalBoss` im Inspektor
+  leer waren und `TotalWeeks` nicht übernommen wurde.
+  → Felder zugewiesen, Werte mit Enter bestätigt und gespeichert.
+- „Semester geschafft!“ erschien vor der letzten HP-Meldung des Bosses.
+  → `Boss.TakeDamage` meldet jetzt zuerst die neuen HP und nimmt erst danach Schaden.
+- Build-Fehler „} erwartet“ nach dem Ersetzen der Methode: Die schließende
+  Klammer der Klasse fehlte. → Klammer ergänzt.
+
+## 9. Arena-Begrenzung (Leveldesign)
+
+**Datum:** 11.11.2026
+**Dateien:** `scripts/level/ArenaFloor.cs`, `scripts/enemies/EnemySpawner.cs`
+
+### Umsetzung
+- `ArenaFloor` erzeugt beim Start einen `StaticBody2D` „Walls“ mit vier
+  rechteckigen Kollisionsformen direkt außerhalb der Arena (Dicke `WallThickness`, 64 px).
+- Kollision und Zeichnung nutzen dieselben Rechtecke (`GetWallRects`), damit
+  sichtbare und tatsächliche Wand immer übereinstimmen.
+- Die Arena ist in der Group `"arena"` und bietet `Bounds`, `IsInside()` und
+  `ClampInside()` für andere Systeme an.
+- Der `EnemySpawner` sucht jetzt bis zu 10 zufällige Punkte im Abstand
+  `SpawnDistance` und nimmt den ersten, der mindestens 100 px innerhalb der Arena liegt.
+  Findet er keinen (Spieler in einer Ecke), wird der Punkt in die Arena zurückgeschoben.
+
+### Designentscheidungen
+- **Wände per Code statt von Hand platziert:** Die Wände passen sich automatisch an
+  `ArenaSize` an. Für jeden Ort kann die Arenagröße im Inspektor geändert werden.
+- **Spawn nur innerhalb der Arena:** Ohne diese Prüfung wären Gegner hinter der Wand
+  entstanden und dort hängen geblieben.
+
+### Test
+- Spieler kann die Arena nicht verlassen. In der Ecke stehend spawnen alle Gegner
+  innerhalb der Arena.
+
+### Probleme & Lösungen
+- Beim Ersetzen von `SpawnScene` wurde versehentlich die ganze Datei überschrieben
+  (Build-Fehler „public-Modifizierer nicht gültig“). → Datei komplett neu eingefügt.
+- Grauer Streifen zwischen Boden und Wand: 4000 px ergeben 62,5 Kacheln (nur 62
+  gezeichnet), und der Rahmen wurde mittig auf der Linie gezeichnet.
+  → Kachelanzahl aufrunden und am Rand abschneiden, Wände als gefüllte Rechtecke
+  an der Position der Kollision zeichnen.
