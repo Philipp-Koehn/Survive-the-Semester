@@ -335,3 +335,16 @@
   gezeichnet), und der Rahmen wurde mittig auf der Linie gezeichnet.
   → Kachelanzahl aufrunden und am Rand abschneiden, Wände als gefüllte Rechtecke
   an der Position der Kollision zeichnen.
+
+## 10. Umstellung auf den echten Spieler
+
+**Datum:** 16.11.2026
+
+- Philipps `PlayerController` ersetzt in `main.tscn` den Test-Spieler. Er ist in der
+  Group `"player"` und hat `TakeDamage(int)`. Die Gegner funktionieren ohne Änderung.
+- Philipps Waffen treffen die Gegner über `TakeDamage`, sein XP-System nutzt das
+  `Died`-Signal der Gegner.
+- Test: Gegner verursachen Schaden (erst Schild, dann Leben), der Spieler stirbt bei 0,
+  besiegte Gegner geben XP, der Semesterablauf startet nach dem Neustart wieder in Woche 1.
+- `TestPlayer` und `test_player.tscn` wurden gelöscht, da sie nicht mehr benötigt werden.
+- Ungültige UID für `icon.svg` in `enemy.tscn` behoben (Textur neu zugewiesen).

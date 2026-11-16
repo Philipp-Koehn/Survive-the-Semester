@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://5vwdpkhf26h8"]
 
 [ext_resource type="Script" uid="uid://davaiajive6e7" path="res://scripts/enemies/Enemy.cs" id="1_8e3ao"]
-[ext_resource type="Texture2D" uid="uid://j1urdgchcjjt" path="res://icon.svg" id="2_38ino"]
+[ext_resource type="Texture2D" uid="uid://csgfaaq2bnjl0" path="res://icon.svg" id="2_38ino"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jpbup"]
 radius = 25.0
