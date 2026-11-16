@@ -5,6 +5,7 @@
 [node name="Pen" type="Node2D"]
 script = ExtResource("1_weapon")
 WeaponName = "Stift"
-Damage = 5
-Cooldown = 0.6
+Damage = 10
+DamagePerLevel = 4
+Cooldown = 2.0
 Range = 250.0

@@ -43,6 +43,37 @@ public partial class WeaponInventory : Node2D
         {
             Select(0);
         }
+
+        ApplyStarterWeapon();
+    }
+
+    /// <summary>
+    /// Story 008: puts the starter weapon chosen in the meta progress into the first slot at run start.
+    /// Without a choice, or when the choice is the weapon already there (the pen), nothing changes.
+    /// </summary>
+    private void ApplyStarterWeapon()
+    {
+        string path = MetaProgress.Instance.SelectedStarterPath;
+        if (path == "" || (_slots.Count > 0 && _slots[0].SceneFilePath == path))
+        {
+            return;
+        }
+
+        if (!ResourceLoader.Exists(path))
+        {
+            GD.PushWarning($"Startwaffe '{path}' nicht gefunden, der Stift bleibt.");
+            return;
+        }
+
+        foreach (Weapon weapon in _slots)
+        {
+            RemoveChild(weapon);
+            weapon.QueueFree();
+        }
+
+        _slots.Clear();
+        ActiveIndex = -1;
+        TryAddWeapon(GD.Load<PackedScene>(path));
     }
 
     /// <summary>

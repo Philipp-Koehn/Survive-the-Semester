@@ -199,6 +199,10 @@ public partial class UpgradeManager : Node
             if (@event.IsActionPressed("upgrade_pick_1")) Choose(0);
             else if (@event.IsActionPressed("upgrade_pick_2")) Choose(1);
             else if (@event.IsActionPressed("upgrade_pick_3")) Choose(2);
+
+            // Consume the input so the weapon slots do not also switch (e.g. key 2 -> slot 2).
+            // Choose() unpauses the tree, so without this the WeaponInventory would receive the same key.
+            GetViewport().SetInputAsHandled();
         }
         else if (@event.IsActionPressed("debug_level_up"))
         {

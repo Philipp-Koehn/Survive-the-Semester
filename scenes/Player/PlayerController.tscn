@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" path="res://scenes/Player/Weapons/Laptop.tscn" id="7_laptop"]
 [ext_resource type="Script" path="res://scripts/Player/PlayerStats.cs" id="8_stats"]
 [ext_resource type="Script" path="res://scripts/Player/RunManager.cs" id="9_run"]
+[ext_resource type="Script" path="res://scripts/Player/ExperienceSystem.cs" id="10_xp"]
+[ext_resource type="Script" path="res://scripts/Player/DebugShop.cs" id="11_debugshop"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 28.0
@@ -40,3 +42,9 @@ script = ExtResource("4_inventory")
 [node name="UpgradeManager" type="Node" parent="."]
 script = ExtResource("5_upgrades")
 WeaponPool = [ExtResource("3_pen"), ExtResource("6_calc"), ExtResource("7_laptop")]
+
+[node name="ExperienceSystem" type="Node" parent="."]
+script = ExtResource("10_xp")
+
+[node name="DebugShop" type="Node" parent="."]
+script = ExtResource("11_debugshop")

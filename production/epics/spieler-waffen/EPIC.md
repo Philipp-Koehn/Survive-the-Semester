@@ -18,6 +18,9 @@ Bewegung und Kamera, Startwaffe, bis zu 4 Waffen-Slots mit Wechsel, Upgrade-Ausw
 | 004 | Upgrade-Auswahl pro Level | Logic | Ready | N/A |
 | 005 | Spieler-Werte: Leben, Schaden, Schild, Krit | Logic | Ready | N/A |
 | 006 | Tod und Rückkehr ins Hauptmenü | Integration | Ready | N/A |
+| 007 | XP- und Level-System | Logic | Ready | N/A |
+| 008 | Credits, dauerhafte Freischaltung und passive Upgrades | Logic | Ready | N/A |
+| 009 | Balancing-Durchgang Waffen, Spielerwerte und Fortschritt | Config/Data | Ready | N/A |
 
 ## Schnittstellen zu Kollegen (nur Vorschläge)
 

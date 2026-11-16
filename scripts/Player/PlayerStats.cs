@@ -77,6 +77,21 @@ public partial class PlayerStats : Node
         }
     }
 
+    /// <summary>
+    /// Applies the permanent passive upgrades (story 008). Call once at the start of a run:
+    /// raises the max health and refills the health to it.
+    /// </summary>
+    /// <param name="maxHealthBonus">Added to <see cref="MaxHealth"/>.</param>
+    /// <param name="damageBonus">Added to <see cref="DamageMultiplier"/>.</param>
+    /// <param name="critBonus">Added to <see cref="CritChance"/>, capped at 1.</param>
+    public void ApplyPassiveBonuses(int maxHealthBonus, float damageBonus, float critBonus)
+    {
+        MaxHealth += maxHealthBonus;
+        Health = MaxHealth;
+        DamageMultiplier += damageBonus;
+        CritChance = Mathf.Min(1f, CritChance + critBonus);
+    }
+
     /// <summary>Returns the damage of one hit for <paramref name="baseDamage"/>, with the damage multiplier and a random crit.</summary>
     /// <param name="baseDamage">Damage of the weapon.</param>
     public int RollDamage(int baseDamage)

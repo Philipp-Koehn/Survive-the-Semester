@@ -5,7 +5,7 @@
 [node name="Calculator" type="Node2D"]
 script = ExtResource("1_weapon")
 WeaponName = "Taschenrechner"
-Damage = 3
+Damage = 5
 Cooldown = 1.2
 Range = 120.0
 Kind = 1

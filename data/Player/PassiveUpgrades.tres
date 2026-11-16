@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PassiveUpgrades" format=3]
+
+[ext_resource type="Script" path="res://scripts/Player/PassiveUpgrades.cs" id="1_pu"]
+[ext_resource type="PackedScene" path="res://scenes/Player/Weapons/Pen.tscn" id="2_pen"]
+[ext_resource type="PackedScene" path="res://scenes/Player/Weapons/Calculator.tscn" id="3_calc"]
+[ext_resource type="PackedScene" path="res://scenes/Player/Weapons/Laptop.tscn" id="4_laptop"]
+
+[resource]
+script = ExtResource("1_pu")
+StarterWeapons = Array[PackedScene]([ExtResource("2_pen"), ExtResource("3_calc"), ExtResource("4_laptop")])
+StarterWeaponPrices = PackedInt32Array(0, 150, 300)
