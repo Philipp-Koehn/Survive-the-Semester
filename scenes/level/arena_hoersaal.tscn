@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bvvcajg10iatv"]
+
+[ext_resource type="PackedScene" uid="uid://ca47r1su74m1t" path="res://scenes/level/arena.tscn" id="1_80srh"]
+
+[node name="ArenaHoersaal" unique_id=1636446072 instance=ExtResource("1_80srh")]
+ArenaSize = Vector2i(3500, 2500)
+ColorA = Color(0.17254902, 0.20784314, 0.3137255, 1)
+ColorB = Color(0.19607843, 0.23529412, 0.3529412, 1)
+BorderColor = Color(0.101960786, 0.1254902, 0.2, 1)

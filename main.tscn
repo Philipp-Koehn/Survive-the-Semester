@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cr3480hmyljsh"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/PlayerController.tscn" id="1_0xm2m"]
-[ext_resource type="Script" uid="uid://f8mov6fg8ie5" path="res://scripts/level/ArenaFloor.cs" id="1_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://ca47r1su74m1t" path="res://scenes/level/arena.tscn" id="1_kek77"]
 [ext_resource type="Script" uid="uid://dgysb6aimfd6a" path="res://scripts/enemies/EnemySpawner.cs" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://c43dijje2s2yf" path="res://scenes/enemies/deadline.tscn" id="4_1bvp3"]
@@ -12,10 +12,9 @@
 
 [node name="Main" type="Node2D" unique_id=1386934817]
 
-[node name="ArenaFloor" type="Node2D" parent="." unique_id=831511170]
-script = ExtResource("1_1bvp3")
+[node name="ArenaFloor" parent="." unique_id=1636446072 instance=ExtResource("1_kek77")]
 
-[node name="PlayerController" parent="." instance=ExtResource("1_0xm2m")]
+[node name="PlayerController" parent="." unique_id=1622029908 instance=ExtResource("1_0xm2m")]
 
 [node name="EnemySpawner" type="Node2D" parent="." unique_id=2135026305]
 script = ExtResource("2_0xm2m")
@@ -29,3 +28,4 @@ Deadline = ExtResource("4_1bvp3")
 HomeworkStack = ExtResource("6_7mycd")
 MidtermBoss = ExtResource("8_kek77")
 FinalBoss = ExtResource("9_4c57u")
+WeekDuration = 5.0

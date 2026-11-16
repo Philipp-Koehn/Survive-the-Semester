@@ -348,3 +348,45 @@
   besiegte Gegner geben XP, der Semesterablauf startet nach dem Neustart wieder in Woche 1.
 - `TestPlayer` und `test_player.tscn` wurden gelöscht, da sie nicht mehr benötigt werden.
 - Ungültige UID für `icon.svg` in `enemy.tscn` behoben (Textur neu zugewiesen).
+
+## 11. Orte im Semester (Leveldesign)
+
+**Datum:** 16.11.2026
+**Dateien:** `scenes/level/arena.tscn`, `scenes/level/arena_gaenge.tscn`,
+`arena_campus.tscn`, `arena_bibliothek.tscn`, `arena_mensa.tscn`, `arena_hoersaal.tscn`,
+`scripts/enemies/WaveManager.cs`, `main.tscn`
+
+### Umsetzung
+- Die Arena ist eine eigene Szene (`arena.tscn`). Jeder Ort ist eine geerbte Szene
+  davon mit eigener Größe und eigenen Farben:
+
+| Wochen | Ort | Arena-Größe (px) |
+|---|---|---|
+| 1–2 | Gänge | 4000 × 1400 (lang und schmal) |
+| 3–5 | Outdoor-Campus | 5000 × 5000 (weitläufig) |
+| 6–8 | Bibliothek | 3000 × 3000 |
+| 9–11 | Mensa | 3500 × 3500 |
+| 12–14 | Hörsaal | 3500 × 2500 |
+
+- Der `WaveManager` bestimmt zu Beginn jeder Woche den Ort (`LocationStartWeeks`).
+  Wechselt er, wird die alte Arena entfernt und die neue geladen
+  (`LocationArenaPaths`). Der Spieler wird in die Mitte gesetzt, normale Gegner
+  werden entfernt, Bosse werden in die neue Arena verschoben.
+- Neues Signal `LocationChanged(int index, string locationName)`, z. B. für eine
+  Ortsanzeige in der UI (Fabian).
+- Philipps alte Test-Arena `scenes/Arena.tscn` wurde nach Absprache gelöscht.
+
+### Designentscheidungen
+- **Geerbte Szenen pro Ort:** Größe, Farben und später Grafiken und Hindernisse
+  können pro Ort im Inspektor geändert werden, Wände und Spawn-Logik bleiben gemeinsam.
+- **Unterschiedliche Größen als Leveldesign:** Enge Gänge erzeugen Druck,
+  der weite Campus erlaubt Ausweichen.
+- **Platzhalter-Farben:** Die Böden werden später durch Pixel-Art von Fabian
+  ersetzt (Kachelgröße 16 oder 32 px, noch offen).
+- **Gegner beim Wechsel entfernen:** Sonst stünden sie außerhalb der neuen,
+  eventuell kleineren Arena.
+
+### Test
+- Mit `WeekDuration = 5` getestet: Die Orte wechseln in den vorgesehenen Wochen
+  (Ausgabe „Neuer Ort: …“), die Zwischenprüfung erscheint in Woche 7 in der Bibliothek,
+  XP des Spielers laufen über den Wechsel weiter. Danach auf 30 s zurückgestellt.

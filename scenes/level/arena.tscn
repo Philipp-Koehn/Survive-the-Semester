@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ca47r1su74m1t"]
+
+[ext_resource type="Script" uid="uid://f8mov6fg8ie5" path="res://scripts/level/ArenaFloor.cs" id="1_rvot1"]
+
+[node name="ArenaFloor" type="Node2D" unique_id=1636446072]
+script = ExtResource("1_rvot1")

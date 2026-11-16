@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dgl75eijijxrc"]
+
+[ext_resource type="PackedScene" uid="uid://ca47r1su74m1t" path="res://scenes/level/arena.tscn" id="1_8bbq5"]
+
+[node name="ArenaMensa" unique_id=1636446072 instance=ExtResource("1_8bbq5")]
+ArenaSize = Vector2i(3500, 3500)
+ColorA = Color(0.7882353, 0.7607843, 0.6901961, 1)
+ColorB = Color(0.7411765, 0.70980394, 0.63529414, 1)
+BorderColor = Color(0.5411765, 0.50980395, 0.4392157, 1)
