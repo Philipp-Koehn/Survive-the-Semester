@@ -1,7 +1,7 @@
 using Godot;
 
 // Erzeugt in regelmäßigen Abständen Gegner auf einem Kreis um den Spieler,
-// außerhalb des sichtbaren Bereichs, aber immer innerhalb der Arena.
+// außerhalb des sichtbaren Bereichs, aber immer innerhalb der Arena und nicht in Hindernissen.
 // Der Gegnertyp wird zufällig aus einer Liste gewählt.
 public partial class EnemySpawner : Node2D
 {
@@ -53,23 +53,42 @@ public partial class EnemySpawner : Node2D
 	}
 
 	// Sucht einen Punkt im Abstand SpawnDistance zum Spieler, der in der Arena liegt
+	// und nicht in einem Hindernis
 	private Vector2 FindSpawnPosition()
 	{
 		var arena = GetTree().GetFirstNodeInGroup("arena") as ArenaFloor;
 		const float margin = 100f; // Abstand zu den Wänden
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 20; i++)
 		{
 			float angle = _rng.RandfRange(0f, Mathf.Tau);
 			Vector2 pos = _player.GlobalPosition + Vector2.FromAngle(angle) * SpawnDistance;
-			if (arena == null || arena.IsInside(pos, margin))
+			bool inArena = arena == null || arena.IsInside(pos, margin);
+			if (inArena && !IsBlocked(pos))
 				return pos;
 		}
 
 		// Kein passender Punkt gefunden (Spieler steht in einer Ecke): in die Arena zurückschieben
 		Vector2 fallback = _player.GlobalPosition
 						 + Vector2.FromAngle(_rng.RandfRange(0f, Mathf.Tau)) * SpawnDistance;
-		return arena.ClampInside(fallback, margin);
+		return arena == null ? fallback : arena.ClampInside(fallback, margin);
+	}
+
+	// Prüft, ob an dieser Stelle ein Hindernis steht
+	private bool IsBlocked(Vector2 pos)
+	{
+		var query = new PhysicsPointQueryParameters2D
+		{
+			Position = pos,
+			CollideWithBodies = true,
+			CollideWithAreas = false
+		};
+		foreach (var hit in GetWorld2D().DirectSpaceState.IntersectPoint(query))
+		{
+			if (hit["collider"].As<Node>() is Node node && node.IsInGroup("obstacles"))
+				return true;
+		}
+		return false;
 	}
 
 	// Sucht den Spieler, falls er noch nicht bekannt ist

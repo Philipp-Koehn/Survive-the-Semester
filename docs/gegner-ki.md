@@ -390,3 +390,36 @@
 - Mit `WeekDuration = 5` getestet: Die Orte wechseln in den vorgesehenen Wochen
   (Ausgabe „Neuer Ort: …“), die Zwischenprüfung erscheint in Woche 7 in der Bibliothek,
   XP des Spielers laufen über den Wechsel weiter. Danach auf 30 s zurückgestellt.
+
+## 12. Hindernisse (Leveldesign)
+
+**Datum:** 16.11.2026
+**Dateien:** `scripts/level/Obstacle.cs`, `scenes/level/obstacle.tscn`,
+`scenes/level/arena_gaenge.tscn`, `scripts/enemies/EnemySpawner.cs`
+
+### Umsetzung
+- `Obstacle` ist ein `StaticBody2D` mit einstellbarer Größe in Kacheln (`SizeInTiles`)
+  und Farbe. Es zeichnet ein Platzhalter-Rechteck und legt beim Spielstart eine
+  passende rechteckige Kollision an. Alle Hindernisse sind in der Group `"obstacles"`.
+- Durch `[Tool]` ist das Rechteck schon im Editor sichtbar, damit man es platzieren kann.
+  Die Kollision wird nur im Spiel angelegt, damit sie nicht in der Szene mitgespeichert wird.
+- Der `EnemySpawner` prüft vor dem Spawnen per Punktabfrage (`IntersectPoint`),
+  ob an der Stelle ein Hindernis steht, und sucht sonst einen anderen Punkt.
+- Gänge (4000 × 1400) bestückt mit:
+
+| Hindernis | Größe (Kacheln) | Anzahl | Platzierung |
+|---|---|---|---|
+| Spindreihe | 3 × 2 | 8 | oben und unten an der Wand, versetzt |
+| Schwarzes Brett | 2 × 1 | 1 | an der oberen Wand |
+| Mülleimer | 1 × 1 | 3 | frei im Gang |
+
+### Designentscheidungen
+- **Ein Baustein für alle Hindernisse:** Ein Skript, beliebig oft in jede Arena gesetzt.
+  Später wird nur das Rechteck durch Fabians Grafik ersetzt.
+- **Versetzte Spindreihen:** erzeugen Engstellen, durch die man sich bewegen muss.
+- **Mitte bleibt frei:** Der Spieler wird beim Ortswechsel in die Mitte gesetzt.
+- **Hindernisse vor allem am Rand:** Die Gegner nutzen keine Wegfindung. Freistehende
+  Hindernisse sind deshalb klein, damit Gegner nicht dauerhaft hängen bleiben.
+
+### Test
+- Spieler kann nicht durch Hindernisse laufen, Gegner spawnen nicht in Hindernissen.

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cmor6jsjgquji"]
+
+[ext_resource type="Script" uid="uid://c5l2ut8i23fle" path="res://scripts/level/Obstacle.cs" id="1_ws0mk"]
+
+[node name="Obstacle" type="StaticBody2D" unique_id=1766879388]
+script = ExtResource("1_ws0mk")

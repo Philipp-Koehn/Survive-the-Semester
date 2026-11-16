@@ -1,9 +1,67 @@
 [gd_scene format=3 uid="uid://dlhf4w2weybqg"]
 
 [ext_resource type="PackedScene" uid="uid://ca47r1su74m1t" path="res://scenes/level/arena.tscn" id="1_ttyev"]
+[ext_resource type="PackedScene" uid="uid://cmor6jsjgquji" path="res://scenes/level/obstacle.tscn" id="2_xt43v"]
 
 [node name="ArenaGaenge" unique_id=1636446072 instance=ExtResource("1_ttyev")]
 ArenaSize = Vector2i(4000, 1400)
 ColorA = Color(0.2901961, 0.30980393, 0.3529412, 1)
 ColorB = Color(0.33333334, 0.35686275, 0.40392157, 1)
 BorderColor = Color(0.16862746, 0.18431373, 0.21176471, 1)
+
+[node name="Spinde1" parent="." index="0" unique_id=1766879388 instance=ExtResource("2_xt43v")]
+position = Vector2(-1400, -636)
+SizeInTiles = Vector2i(3, 2)
+Color = Color(0.3529412, 0.41960785, 0.5019608, 1)
+
+[node name="Spinde2" parent="." index="1" unique_id=756481103 instance=ExtResource("2_xt43v")]
+position = Vector2(-400, -636)
+SizeInTiles = Vector2i(3, 2)
+Color = Color(0.3529412, 0.41960785, 0.5019608, 1)
+
+[node name="Spinde3" parent="." index="2" unique_id=1362374314 instance=ExtResource("2_xt43v")]
+position = Vector2(600, -636)
+SizeInTiles = Vector2i(3, 2)
+Color = Color(0.3529412, 0.41960785, 0.5019608, 1)
+
+[node name="Spinde4" parent="." index="3" unique_id=589952388 instance=ExtResource("2_xt43v")]
+position = Vector2(1600, -636)
+SizeInTiles = Vector2i(3, 2)
+Color = Color(0.3529412, 0.41960785, 0.5019608, 1)
+
+[node name="Spinde5" parent="." index="4" unique_id=155140352 instance=ExtResource("2_xt43v")]
+position = Vector2(-1600, 636)
+SizeInTiles = Vector2i(3, 2)
+Color = Color(0.3529412, 0.41960785, 0.5019608, 1)
+
+[node name="Spinde6" parent="." index="5" unique_id=431544511 instance=ExtResource("2_xt43v")]
+position = Vector2(-600, 636)
+SizeInTiles = Vector2i(3, 2)
+Color = Color(0.3529412, 0.41960785, 0.5019608, 1)
+
+[node name="Spinde7" parent="." index="6" unique_id=184329746 instance=ExtResource("2_xt43v")]
+position = Vector2(400, 636)
+SizeInTiles = Vector2i(3, 2)
+Color = Color(0.3529412, 0.41960785, 0.5019608, 1)
+
+[node name="Spinde8" parent="." index="7" unique_id=27420105 instance=ExtResource("2_xt43v")]
+position = Vector2(1400, 636)
+SizeInTiles = Vector2i(3, 2)
+Color = Color(0.3529412, 0.41960785, 0.5019608, 1)
+
+[node name="Brett" parent="." index="8" unique_id=1234559905 instance=ExtResource("2_xt43v")]
+position = Vector2(-900, -668)
+SizeInTiles = Vector2i(2, 1)
+Color = Color(0.5411765, 0.41568628, 0.22745098, 1)
+
+[node name="Muelleimer1" parent="." index="9" unique_id=520427162 instance=ExtResource("2_xt43v")]
+position = Vector2(-1000, -150)
+Color = Color(0.23529412, 0.23529412, 0.23529412, 1)
+
+[node name="Muelleimer2" parent="." index="10" unique_id=1856741257 instance=ExtResource("2_xt43v")]
+position = Vector2(1000, 150)
+Color = Color(0.23529412, 0.23529412, 0.23529412, 1)
+
+[node name="Muelleimer3" parent="." index="11" unique_id=778626113 instance=ExtResource("2_xt43v")]
+position = Vector2(300, -300)
+Color = Color(0.23529412, 0.23529412, 0.23529412, 1)
