@@ -956,7 +956,7 @@ alle 14 Prüfungen bestanden:
 | Outdoor-Campus (3–5) | Sprengerköpfe | 3 Rasensprenger (Gegner auf 60 %), 2 Radwege mit Fahrrad | fertig (20.11.2026) |
 | Bibliothek (6–8) | 12 Bücherregale bündig an den Wänden | Ruhezone (Gegner auf 50 %) | fertig (20.11.2026) |
 | Mensa (9–11) | 7 Tische (2 × 1) mit viel Abstand | Essensausgabe (1× pro Woche +20 Leben), Energy-Drink-Automat | fertig (20.11.2026) |
-| Hörsaal (12–14, Prüfungsphase) | Sitzreihen am Rand | Tafel reagiert auf Boss-Warnung | geplant |
+| Hörsaal (12–14, Prüfungsphase) | 5 Sitzreihen (6 × 1) bündig an oberer/unterer Wand | Tafel zeigt Boss-Warnung, Bossnamen und Prüfungsphase | fertig (20.11.2026) |
 
 ## 26. Leveldesign Outdoor-Campus: Rasensprenger und Radwege
 
@@ -1082,3 +1082,42 @@ Headless (`level_test.gd -- mensa`, Woche 9), 8 von 8 bestanden:
 ### Offene Punkte
 - Die Heilung wirkt erst mit `PlayerStats.Heal` von Philipp.
 - Sounds: `Triggered("essen")` und `Triggered("essen_bereit")` (Tim).
+
+## 29. Leveldesign Hörsaal: Sitzreihen und Tafel
+
+**Datum:** 20.11.2026
+**Dateien:** `scripts/level/Blackboard.cs`, `scenes/level/arena_hoersaal.tscn`, `tests/headless/level_test.gd`
+
+### Umsetzung und Verhalten
+- **Sitzreihen** (5 × `Obstacle`, 6 × 1 Kacheln, violett-grau), bündig an der Wand:
+  oben bei x = ±1200, unten bei x = −1200, 0 und 1200. Die gesamte Mitte bleibt frei.
+  Boss-Geschosse verschwinden an Hindernissen, die Reihen sind also Deckung am Rand.
+- **Tafel** (`Blackboard`, 640 × 44, oben in der Mitte an der Wand, **ohne Kollision**):
+  dunkelgrüne Tafel mit Holzrahmen und Kreideschrift. Sie hört auf die Signale des WaveManagers:
+
+| Signal | Tafel zeigt |
+|---|---|
+| (Start) | „Vorlesung“ |
+| `BossWarning` | „<Boss> in 5 s!“, blinkt 3× rot (`Triggered("tafel_warnung")`) |
+| `BossSpawned` | Name des Bosses |
+| `ExamPhaseStarted` | „Prüfungsphase“, blinkt 2× |
+| `SemesterFinished` | „Bestanden!“ |
+
+### Designentscheidungen
+- **Bossarena bleibt frei:** Hier finden ab Woche 12 die Prüfungsphase und der Endboss statt.
+  Keine Zonen, keine Fahrräder, nichts, was Bodenangriffe oder Bossbewegung verändert.
+- **Sitzreihen bündig an der Wand statt mit Gang dahinter:** Ein Gang hinter den Reihen wäre
+  schmaler als der Professor (Durchmesser 224). Der Spieler könnte sich dort vor dem Kontaktschaden
+  verstecken. Bündig gibt es dieses Versteck nicht.
+- **Tafel ohne Kollision:** reine Anzeige. Sie macht die Warnung aus Folie 7 der Präsentation
+  („Warnung vor dem nächsten Prüfungs-Boss“) schon im Level sichtbar, bis Fabians UI sie übernimmt.
+
+### Test
+Headless (`level_test.gd -- hoersaal`, Woche 12), 10 von 10 bestanden:
+- 5 Sitzreihen vorhanden. Die Tafel zeigt „Vorlesung“, nach `BossWarning` „Testklausur in 5 s!“,
+  nach `ExamPhaseStarted` „Prüfungsphase“.
+- Endboss „Der Professor“ 20 s lang im Hörsaal, Spieler läuft im Kreis: Er bewegt sich
+  (1300 px Weg), bleibt in der Arena, bis zu 8 Bodenangriffe und 52 Geschosse gleichzeitig.
+- Je 40 Spawns vor einer Sitzreihe und vor der Tafel: keiner in einem Hindernis.
+- Dauerläufe Woche 12 und Prüfungsphase (15), je 60 s: keine Fehler, höchstens 50 Gegner
+  und 250 Nodes. In der Prüfungsphase zeigte die Tafel die Warnung vor der Klausur Mathe 1.

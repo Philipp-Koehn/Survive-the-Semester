@@ -89,6 +89,7 @@ func _process(delta):
 		"campus": return campus_test()
 		"bibliothek": return bibliothek_test()
 		"mensa": return mensa_test()
+		"hoersaal": return hoersaal_test()
 	return soak_test()
 
 func soak_test() -> bool:
@@ -414,5 +415,61 @@ func mensa_test() -> bool:
 			check(machine.get("IsReady") == false and triggers.get("energydrink", 0) == 1, "Energy-Drink-Automat in der Mensa löst aus (Schild war leer)")
 			spawn_check(Vector2(-1300, 300), "Spieler neben einem Tisch")
 			spawn_check(Vector2(0, -1400), "Spieler vor der Theke")
+			return finish()
+	return false
+
+var board: Node
+var boss: Node
+var boss_start := Vector2.ZERO
+var max_ground := 0
+var max_proj := 0
+var boss_path := 0.0
+var boss_last := Vector2.ZERO
+
+func hoersaal_test() -> bool:
+	if is_instance_valid(boss):
+		max_ground = max(max_ground, count_class("enemy_attacks", "GroundAttack.cs"))
+		max_proj = max(max_proj, count_class("enemy_attacks", "EnemyProjectile.cs"))
+		boss_path += boss.global_position.distance_to(boss_last)
+		boss_last = boss.global_position
+	match step:
+		0:
+			if t < 0.5: return false
+			var arena = get_first_node_in_group("arena")
+			board = arena.get_node("Tafel")
+			var rows := 0
+			for n in get_nodes_in_group("obstacles"):
+				if n.name.begins_with("Sitzreihe"): rows += 1
+			check(rows == 5, "Hörsaal hat 5 Sitzreihen (%d)" % rows)
+			check(board.get("CurrentText") == "Vorlesung", "Tafel zeigt am Anfang \"Vorlesung\"")
+			main.get_node("WaveManager").emit_signal("BossWarning", "Testklausur", 5.0)
+			step = 1
+		1:
+			if t < 1.0: return false
+			check(str(board.get("CurrentText")).contains("Testklausur") and triggers.get("tafel_warnung", 0) == 1, "Tafel zeigt Boss-Warnung (\"%s\")" % board.get("CurrentText"))
+			main.get_node("WaveManager").emit_signal("ExamPhaseStarted")
+			step = 2
+		2:
+			if t < 1.5: return false
+			check(board.get("CurrentText") == "Prüfungsphase", "Tafel zeigt \"Prüfungsphase\"")
+			# Endboss in den Hörsaal, Spieler bewegt sich im Kreis (weicht nicht aus, ist aber unverwundbar)
+			boss = spawn_enemy("res://scenes/enemies/professor.tscn", Vector2(600, 0))
+			boss_start = boss.global_position
+			boss_last = boss_start
+			step = 3
+		3:
+			player.global_position = Vector2(cos(t * 0.5), sin(t * 0.5)) * 500.0
+			if t < 21.5: return false
+			check(boss_path > 400.0, "Professor bewegt sich im Hörsaal (%.0f px in 20 s)" % boss_path)
+			check(max_ground > 0, "Bodenangriffe im Hörsaal (bis %d gleichzeitig)" % max_ground)
+			check(max_proj > 0, "Geschosse im Hörsaal (bis %d gleichzeitig)" % max_proj)
+			var arena = get_first_node_in_group("arena")
+			check(arena.call("IsInside", boss.global_position, 0.0), "Professor bleibt in der Arena")
+			boss.call("TakeDamage", 1000000)
+			step = 4
+		4:
+			if t < 22.5: return false
+			spawn_check(Vector2(-1200, 900), "Spieler vor einer Sitzreihe")
+			spawn_check(Vector2(0, -900), "Spieler vor der Tafel")
 			return finish()
 	return false
