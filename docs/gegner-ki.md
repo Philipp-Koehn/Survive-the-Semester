@@ -945,7 +945,8 @@ alle 14 Prüfungen bestanden:
   Test (180 s): Woche 5 höchstens 57 Gegner mit zwei Bossen (vorher 64), Woche 10 höchstens 53.
 - Nach einem fertigen 180-s-Lauf brach Godot einmal beim Beenden ab
   („mutex lock failed“, nach der Ergebnisausgabe). Der Test war da schon vollständig. Das ist ein
-  Problem beim Herunterfahren im Headless-Skriptmodus, kein Spielfehler. Wieder beobachten.
+  Problem beim Herunterfahren im Headless-Skriptmodus, kein Spielfehler. Im vollständigen Testlauf
+  danach (8 Dauerläufe und der Gänge-Test, 20.11.2026) trat es nicht mehr auf. Weiter beobachten.
 
 ## 25. Übersicht: Orte und ihre Elemente
 
