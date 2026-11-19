@@ -1,9 +1,81 @@
 [gd_scene format=3 uid="uid://1xj2aer3blfu"]
 
 [ext_resource type="PackedScene" uid="uid://ca47r1su74m1t" path="res://scenes/level/arena.tscn" id="1_n1q0g"]
+[ext_resource type="PackedScene" uid="uid://cmor6jsjgquji" path="res://scenes/level/obstacle.tscn" id="2_obst"]
+[ext_resource type="Script" path="res://scripts/level/SlowZone.cs" id="3_zone"]
 
 [node name="ArenaBibliothek" unique_id=1636446072 instance=ExtResource("1_n1q0g")]
 ArenaSize = Vector2i(3000, 3000)
 ColorA = Color(0.41960785, 0.30588236, 0.20784314, 1)
 ColorB = Color(0.4627451, 0.34117648, 0.23529412, 1)
 BorderColor = Color(0.23921569, 0.16470589, 0.10980392, 1)
+
+[node name="RegalLinks1" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-1468, -900)
+SizeInTiles = Vector2i(1, 4)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalRechts1" parent="." instance=ExtResource("2_obst")]
+position = Vector2(1468, -900)
+SizeInTiles = Vector2i(1, 4)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalLinks2" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-1468, -300)
+SizeInTiles = Vector2i(1, 4)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalRechts2" parent="." instance=ExtResource("2_obst")]
+position = Vector2(1468, -300)
+SizeInTiles = Vector2i(1, 4)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalLinks3" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-1468, 300)
+SizeInTiles = Vector2i(1, 4)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalRechts3" parent="." instance=ExtResource("2_obst")]
+position = Vector2(1468, 300)
+SizeInTiles = Vector2i(1, 4)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalLinks4" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-1468, 900)
+SizeInTiles = Vector2i(1, 4)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalRechts4" parent="." instance=ExtResource("2_obst")]
+position = Vector2(1468, 900)
+SizeInTiles = Vector2i(1, 4)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalOben1" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-600, -1468)
+SizeInTiles = Vector2i(4, 1)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalUnten1" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-600, 1468)
+SizeInTiles = Vector2i(4, 1)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalOben2" parent="." instance=ExtResource("2_obst")]
+position = Vector2(600, -1468)
+SizeInTiles = Vector2i(4, 1)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="RegalUnten2" parent="." instance=ExtResource("2_obst")]
+position = Vector2(600, 1468)
+SizeInTiles = Vector2i(4, 1)
+Color = Color(0.36, 0.22, 0.12, 1)
+
+[node name="Ruhezone" type="Node2D" parent="."]
+position = Vector2(-650, -600)
+script = ExtResource("3_zone")
+Shape = 1
+Size = Vector2(800, 600)
+EnemySpeedFactor = 0.5
+Color = Color(0.55, 0.75, 1, 0.14)
+PulseBorder = true
+Caption = "Ruhezone"

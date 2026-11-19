@@ -87,6 +87,7 @@ func _process(delta):
 	match mode:
 		"gaenge": return gaenge_test()
 		"campus": return campus_test()
+		"bibliothek": return bibliothek_test()
 	return soak_test()
 
 func soak_test() -> bool:
@@ -299,5 +300,66 @@ func campus_test() -> bool:
 			check(hp >= 0 and hp <= probe_hp - 20, "Fahrrad trifft Gegner (%d -> %d HP)" % [probe_hp, hp])
 			check(triggers.get("fahrrad_treffer", 0) == 1, "Fahrrad trifft Spieler genau einmal")
 			check(lanes[0].get("IsActive") == false, "Radweg nach der Durchfahrt wieder frei")
+			return finish()
+	return false
+
+func blocked_by_obstacle(pos: Vector2) -> bool:
+	var q := PhysicsPointQueryParameters2D.new()
+	q.position = pos
+	for hit in root.get_world_2d().direct_space_state.intersect_point(q):
+		if hit["collider"].is_in_group("obstacles"):
+			return true
+	return false
+
+func spawn_check(where: Vector2, label: String):
+	player.global_position = where
+	var spawner = main.get_node("EnemySpawner")
+	var scene = load("res://scenes/enemies/enemy.tscn")
+	var bad := 0
+	for i in 40:
+		var e = spawner.call("SpawnScene", scene)
+		if blocked_by_obstacle(e.global_position): bad += 1
+		e.queue_free()
+	check(bad == 0, "%s: kein Spawn in Hindernissen (%d von 40)" % [label, bad])
+
+func bibliothek_test() -> bool:
+	match step:
+		0:
+			if t < 0.5: return false
+			zones = get_nodes_in_group("slow_zones")
+			check(zones.size() == 1, "Bibliothek hat eine Ruhezone (%d)" % zones.size())
+			var shelves := 0
+			for n in get_nodes_in_group("obstacles"):
+				if n.name.begins_with("Regal"): shelves += 1
+			check(shelves == 12, "12 Bücherregale (%d)" % shelves)
+			player.global_position = Vector2(700, 700) # weit weg von der Zone
+			spawn_enemy("res://scenes/enemies/enemy.tscn", zones[0].global_position)
+			spawn_enemy("res://scenes/enemies/deadline.tscn", zones[0].global_position + Vector2(100, 100))
+			spawn_enemy("res://scenes/enemies/enemy.tscn", Vector2(900, -900))
+			spawn_enemy("res://scenes/enemies/midterm_programming.tscn", zones[0].global_position + Vector2(-200, 0))
+			step = 1
+		1:
+			if t < 1.0: return false
+			check(near(spawned[0].velocity.length(), 60.0), "Standard-Gegner in der Ruhezone halb so schnell (%.0f statt 120)" % spawned[0].velocity.length())
+			check(near(spawned[1].velocity.length(), 110.0), "Deadline in der Ruhezone halb so schnell (%.0f statt 220)" % spawned[1].velocity.length())
+			check(near(spawned[2].velocity.length(), 120.0), "Gegner außerhalb normal schnell (%.0f)" % spawned[2].velocity.length())
+			check(near(spawned[3].velocity.length(), 75.0), "Boss in der Ruhezone nicht gebremst (%.0f statt 75)" % spawned[3].velocity.length())
+			step = 2
+		2:
+			if t < 1.5: return false
+			spawned[0].global_position = Vector2(900, 0) # aus der Zone heraus
+			step = 3
+		3:
+			if t < 2.0: return false
+			var e = spawned[0]
+			var inside: bool = zones[0].call("ContainsPoint", e.global_position)
+			check(not inside and near(e.velocity.length(), 120.0), "Nach Verlassen der Zone wieder normales Tempo (%.0f, drin: %s)" % [e.velocity.length(), inside])
+			for x in spawned: if is_instance_valid(x): x.queue_free()
+			spawned.clear()
+			step = 4
+		4:
+			if t < 2.5: return false
+			spawn_check(Vector2(-1100, 0), "Spieler am linken Rand")
+			spawn_check(Vector2(0, 1100), "Spieler am unteren Rand")
 			return finish()
 	return false

@@ -954,7 +954,7 @@ alle 14 Prüfungen bestanden:
 |---|---|---|---|
 | Gänge (1–2) | Spindreihen, Schwarzes Brett, Mülleimer | Seminarraum mit automatischer Tür und Kiste, Energy-Drink-Automat, aufspringende Spinde mit Loot | fertig (20.11.2026) |
 | Outdoor-Campus (3–5) | Sprengerköpfe | 3 Rasensprenger (Gegner auf 60 %), 2 Radwege mit Fahrrad | fertig (20.11.2026) |
-| Bibliothek (6–8) | Bücherregale | Ruhezone (Gegner halb so schnell) | geplant |
+| Bibliothek (6–8) | 12 Bücherregale bündig an den Wänden | Ruhezone (Gegner auf 50 %) | fertig (20.11.2026) |
 | Mensa (9–11) | Tische | Essensausgabe (1× pro Woche Heilung), Energy-Drink-Automat | geplant |
 | Hörsaal (12–14, Prüfungsphase) | Sitzreihen am Rand | Tafel reagiert auf Boss-Warnung | geplant |
 
@@ -1004,3 +1004,40 @@ Headless (`level_test.gd -- campus`, Woche 3, Spawner und Waffen aus), 8 von 8 b
 
 ### Offene Punkte
 - Sound für Klingel und Treffer: `Triggered("fahrrad_klingel")` und `Triggered("fahrrad_treffer")` (Tim).
+
+## 27. Leveldesign Bibliothek: Ruhezone und Bücherregale
+
+**Datum:** 20.11.2026
+**Dateien:** `scenes/level/arena_bibliothek.tscn`, `tests/headless/level_test.gd`
+
+### Umsetzung und Verhalten
+- **Ruhezone** (`SlowZone`, Rechteck 800 × 600 bei (−650, −600), oben links von der Mitte):
+  hellblaue Fläche mit der Aufschrift „Ruhezone“. Der Rand pulsiert langsam (alle 3 s).
+  Gegner darin laufen mit **50 %** ihres Tempos, beim Verlassen wieder normal.
+  Bosse und der Spieler werden nicht gebremst.
+- **Bücherregale** (12 × `Obstacle`, braun):
+  - links und rechts je 4 senkrechte Regale (1 × 4 Kacheln), bündig an der Wand,
+  - oben und unten je 2 waagerechte Regale (4 × 1 Kacheln), bündig an der Wand.
+  - Die Mitte bleibt frei.
+- Es war kein neuer Code nötig: Ruhezone und Regale nutzen `SlowZone` (Abschnitt 26) und `Obstacle` (Abschnitt 12).
+
+### Designentscheidungen
+- **Zone nicht in der Mitte:** Der Spieler startet beim Ortswechsel in der Mitte. Läge die Ruhezone
+  dort, wäre sie ein sicherer Startplatz. So muss man sie erst erreichen.
+- **Regale bündig an der Wand:** Ein Spalt zwischen Regal und Wand wäre schmaler als manche Gegner
+  und eine Falle für Gegner, die direkt verfolgen. Bündig gibt es keinen solchen Spalt.
+- **Nur 50 % statt stehen bleiben:** Die Zone gibt Luft, macht den Spieler aber nicht unangreifbar.
+
+### Test
+Headless (`level_test.gd -- bibliothek`, Woche 6), 9 von 9 bestanden:
+- Ruhezone und 12 Regale vorhanden.
+- In der Zone: Standard-Gegner 60 statt 120 px/s, Deadline 110 statt 220. Außerhalb 120.
+  Boss (Zwischenprüfung Programmieren) in der Zone unverändert 75.
+- Ein Gegner, der aus der Zone gesetzt wird, läuft wieder mit 120.
+- Spieler am linken und unteren Rand, je 40 Spawns: keiner in einem Regal.
+- Dauerlauf Woche 6 (60 s): keine Fehler, höchstens 36 Gegner und 159 Nodes.
+
+### Probleme & Lösungen
+- Die Prüfung „nach Verlassen wieder normales Tempo“ war zuerst zu schwach: Der Gegner war nach
+  5 s noch in der Zone, die Prüfung ging dadurch trivial durch. → Der Gegner wird jetzt aus der Zone
+  gesetzt und dann gemessen.
