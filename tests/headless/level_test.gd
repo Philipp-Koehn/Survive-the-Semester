@@ -88,6 +88,7 @@ func _process(delta):
 		"gaenge": return gaenge_test()
 		"campus": return campus_test()
 		"bibliothek": return bibliothek_test()
+		"mensa": return mensa_test()
 	return soak_test()
 
 func soak_test() -> bool:
@@ -361,5 +362,57 @@ func bibliothek_test() -> bool:
 			if t < 2.5: return false
 			spawn_check(Vector2(-1100, 0), "Spieler am linken Rand")
 			spawn_check(Vector2(0, 1100), "Spieler am unteren Rand")
+			return finish()
+	return false
+
+var counter: Node
+
+func mensa_test() -> bool:
+	match step:
+		0:
+			if t < 0.5: return false
+			var arena = get_first_node_in_group("arena")
+			counter = arena.get_node("Essensausgabe")
+			machine = arena.get_node("EnergyDrinkAutomat")
+			var tables := 0
+			for n in get_nodes_in_group("obstacles"):
+				if n.name.begins_with("Tisch"): tables += 1
+			check(tables == 7, "Mensa hat 7 Tische (%d)" % tables)
+			player.global_position = counter.global_position + Vector2(0, 90) # vor der Theke, volles Leben
+			step = 1
+		1:
+			if t < 1.5: return false
+			check(counter.get("IsReady") == true and triggers.get("essen", 0) == 0, "Essensausgabe bei vollem Leben nicht verbraucht")
+			player.global_position = Vector2(0, 0)
+			player.get_node("PlayerStats").call("TakeDamage", 40) # Schild 25 weg, 15 Leben weg
+			step = 2
+		2:
+			if t < 2.0: return false
+			player.global_position = counter.global_position + Vector2(0, 90)
+			step = 3
+		3:
+			if t < 3.0: return false
+			check(counter.get("IsReady") == false and triggers.get("essen", 0) == 1, "Essensausgabe gibt Essen aus und ist danach leer")
+			player.global_position = Vector2(0, 0)
+			step = 4
+		4:
+			if t < 3.5: return false
+			player.global_position = counter.global_position + Vector2(0, 90)
+			step = 5
+		5:
+			if t < 4.5: return false
+			check(triggers.get("essen", 0) == 1, "In derselben Woche kein zweites Essen")
+			main.get_node("WaveManager").emit_signal("WeekChanged", 10) # neue Woche, Spieler steht noch davor
+			step = 6
+		6:
+			if t < 5.0: return false
+			check(triggers.get("essen_bereit", 0) == 1 and triggers.get("essen", 0) == 2, "Neue Woche: wieder bereit und sofort ausgegeben (Spieler steht davor)")
+			player.global_position = machine.global_position + Vector2(0, 75)
+			step = 7
+		7:
+			if t < 6.0: return false
+			check(machine.get("IsReady") == false and triggers.get("energydrink", 0) == 1, "Energy-Drink-Automat in der Mensa löst aus (Schild war leer)")
+			spawn_check(Vector2(-1300, 300), "Spieler neben einem Tisch")
+			spawn_check(Vector2(0, -1400), "Spieler vor der Theke")
 			return finish()
 	return false

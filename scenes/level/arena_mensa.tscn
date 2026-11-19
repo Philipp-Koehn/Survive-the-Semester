@@ -1,9 +1,55 @@
 [gd_scene format=3 uid="uid://dgl75eijijxrc"]
 
 [ext_resource type="PackedScene" uid="uid://ca47r1su74m1t" path="res://scenes/level/arena.tscn" id="1_8bbq5"]
+[ext_resource type="PackedScene" uid="uid://cmor6jsjgquji" path="res://scenes/level/obstacle.tscn" id="2_obst"]
+[ext_resource type="Script" path="res://scripts/level/FoodCounter.cs" id="3_food"]
+[ext_resource type="Script" path="res://scripts/level/EnergyDrinkMachine.cs" id="4_energy"]
 
 [node name="ArenaMensa" unique_id=1636446072 instance=ExtResource("1_8bbq5")]
 ArenaSize = Vector2i(3500, 3500)
 ColorA = Color(0.7882353, 0.7607843, 0.6901961, 1)
 ColorB = Color(0.7411765, 0.70980394, 0.63529414, 1)
 BorderColor = Color(0.5411765, 0.50980395, 0.4392157, 1)
+
+[node name="Essensausgabe" type="Node2D" parent="."]
+position = Vector2(0, -1718)
+script = ExtResource("3_food")
+
+[node name="EnergyDrinkAutomat" type="Node2D" parent="."]
+position = Vector2(900, -1718)
+script = ExtResource("4_energy")
+
+[node name="Tisch1" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-900, -700)
+SizeInTiles = Vector2i(2, 1)
+Color = Color(0.55, 0.42, 0.3, 1)
+
+[node name="Tisch2" parent="." instance=ExtResource("2_obst")]
+position = Vector2(900, -700)
+SizeInTiles = Vector2i(2, 1)
+Color = Color(0.55, 0.42, 0.3, 1)
+
+[node name="Tisch3" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-900, 700)
+SizeInTiles = Vector2i(2, 1)
+Color = Color(0.55, 0.42, 0.3, 1)
+
+[node name="Tisch4" parent="." instance=ExtResource("2_obst")]
+position = Vector2(900, 700)
+SizeInTiles = Vector2i(2, 1)
+Color = Color(0.55, 0.42, 0.3, 1)
+
+[node name="Tisch5" parent="." instance=ExtResource("2_obst")]
+position = Vector2(0, 1000)
+SizeInTiles = Vector2i(2, 1)
+Color = Color(0.55, 0.42, 0.3, 1)
+
+[node name="Tisch6" parent="." instance=ExtResource("2_obst")]
+position = Vector2(-1300, 0)
+SizeInTiles = Vector2i(2, 1)
+Color = Color(0.55, 0.42, 0.3, 1)
+
+[node name="Tisch7" parent="." instance=ExtResource("2_obst")]
+position = Vector2(1300, 0)
+SizeInTiles = Vector2i(2, 1)
+Color = Color(0.55, 0.42, 0.3, 1)

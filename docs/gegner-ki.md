@@ -955,7 +955,7 @@ alle 14 Prüfungen bestanden:
 | Gänge (1–2) | Spindreihen, Schwarzes Brett, Mülleimer | Seminarraum mit automatischer Tür und Kiste, Energy-Drink-Automat, aufspringende Spinde mit Loot | fertig (20.11.2026) |
 | Outdoor-Campus (3–5) | Sprengerköpfe | 3 Rasensprenger (Gegner auf 60 %), 2 Radwege mit Fahrrad | fertig (20.11.2026) |
 | Bibliothek (6–8) | 12 Bücherregale bündig an den Wänden | Ruhezone (Gegner auf 50 %) | fertig (20.11.2026) |
-| Mensa (9–11) | Tische | Essensausgabe (1× pro Woche Heilung), Energy-Drink-Automat | geplant |
+| Mensa (9–11) | 7 Tische (2 × 1) mit viel Abstand | Essensausgabe (1× pro Woche +20 Leben), Energy-Drink-Automat | fertig (20.11.2026) |
 | Hörsaal (12–14, Prüfungsphase) | Sitzreihen am Rand | Tafel reagiert auf Boss-Warnung | geplant |
 
 ## 26. Leveldesign Outdoor-Campus: Rasensprenger und Radwege
@@ -1041,3 +1041,44 @@ Headless (`level_test.gd -- bibliothek`, Woche 6), 9 von 9 bestanden:
 - Die Prüfung „nach Verlassen wieder normales Tempo“ war zuerst zu schwach: Der Gegner war nach
   5 s noch in der Zone, die Prüfung ging dadurch trivial durch. → Der Gegner wird jetzt aus der Zone
   gesetzt und dann gemessen.
+
+## 28. Leveldesign Mensa: Essensausgabe, Energy-Drink-Automat und Tische
+
+**Datum:** 20.11.2026
+**Dateien:** `scripts/level/FoodCounter.cs`, `scenes/level/arena_mensa.tscn`, `tests/headless/level_test.gd`
+
+### Umsetzung und Verhalten
+- **Essensausgabe** (`FoodCounter`, Theke 320 × 64, bündig an der oberen Wand in der Mitte):
+  - Ist sie bereit, steht ein Tablett mit Teller auf der Theke, und die Theke pulsiert leicht.
+  - Berührt der Spieler die Theke (bis 60 px davor), bekommt er **+20 Leben** (`PlayerBridge.Heal`).
+    Danach ist die Theke leer und pulsiert nicht mehr.
+  - Bei vollem Leben erscheint „Satt“ und es wird nichts verbraucht.
+  - **Einmal pro Woche:** Beim nächsten `WaveManager.WeekChanged` ist sie wieder bereit
+    (`Triggered("essen_bereit")`). Steht der Spieler gerade davor, wird sofort ausgegeben.
+  - Beim Ortswechsel in die Mensa (Woche 9) ist sie sofort bereit.
+- **Energy-Drink-Automat** (wie in den Gängen, Abschnitt 23) bündig an der oberen Wand bei x = 900.
+- **Tische** (7 × `Obstacle`, 2 × 1 Kacheln) bei (±900, ±700), (0, 1000) und (±1300, 0).
+  Um die Mitte bleiben mindestens 600 px frei.
+
+### Designentscheidungen
+- **Heilung an die Woche gekoppelt:** passt zum Thema (einmal Mittagessen pro Woche) und lässt
+  sich nicht ausnutzen. Die Woche kommt über das vorhandene Signal `WeekChanged`.
+- **Tische freistehend, aber klein und weit auseinander:** In Woche 10 kommt die Zwischenprüfung
+  Programmieren mit Sturmangriff. Kleine Tische geben Deckung, ohne den Sturmangriff zu blockieren.
+  Gegner rutschen an 2 × 1 Kacheln ohne Wegfindung vorbei.
+- **Theke und Automat bündig an der Wand:** kein Spalt, in dem Gegner hängen bleiben.
+
+### Test
+Headless (`level_test.gd -- mensa`, Woche 9), 8 von 8 bestanden:
+- 7 Tische vorhanden.
+- Essensausgabe bei vollem Leben nicht verbraucht. Nach Schaden gibt sie aus und ist leer,
+  in derselben Woche kein zweites Mal.
+- Simulierte neue Woche (`WeekChanged`) mit Spieler vor der Theke: wieder bereit und sofort ausgegeben.
+- Energy-Drink-Automat löst bei leerem Schild aus.
+- Je 40 Spawns neben einem Tisch und vor der Theke: keiner in einem Hindernis.
+- Dauerläufe Woche 9 und 10 (je 60 s, mit Zwischenprüfung Programmieren): keine Fehler,
+  höchstens 52 Gegner (50 plus 2 Boss-Helfer) und 204 Nodes.
+
+### Offene Punkte
+- Die Heilung wirkt erst mit `PlayerStats.Heal` von Philipp.
+- Sounds: `Triggered("essen")` und `Triggered("essen_bereit")` (Tim).
