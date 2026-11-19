@@ -1,0 +1,49 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/enemies/ExamBoss.cs" id="2_script"]
+[ext_resource type="PackedScene" uid="uid://c43dijje2s2yf" path="res://scenes/enemies/deadline.tscn" id="3_minion"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_prof"]
+radius = 112.0
+
+[node name="Professor" unique_id=971391848 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+BossName = "Der Professor"
+MinionScene = ExtResource("3_minion")
+SummonInterval = 6.0
+MinionsPerSummon = 3
+SummonRadius = 180.0
+PreferredDistance = 400.0
+AttackRange = 1000.0
+ProjectileSpeed = 320.0
+ProjectileDamage = 10
+ProjectileColor = Color(1, 0.3, 0.9, 1)
+AimedInterval = 1.6
+AimedShots = 5
+AimedSpreadDegrees = 32.0
+RingInterval = 4.5
+RingCount = 16
+GroundInterval = 3.5
+GroundAtPlayer = true
+GroundScatterCount = 2
+GroundScatterRadius = 240.0
+GroundLineCount = 5
+GroundLineStagger = 0.15
+GroundRadius = 80.0
+GroundWarningTime = 1.0
+GroundDamage = 18
+Phase2HealthFraction = 0.5
+Phase2IntervalFactor = 0.6
+Phase2ExtraScatter = 3
+SummonOnlyInPhase2 = true
+Speed = 65.0
+MaxHealth = 1800
+ContactDamage = 25
+
+[node name="Sprite2D" parent="." index="0" unique_id=211322272]
+modulate = Color(0.3, 0.3, 0.3, 1)
+scale = Vector2(1.8, 1.8)
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1126489323]
+shape = SubResource("CircleShape2D_prof")

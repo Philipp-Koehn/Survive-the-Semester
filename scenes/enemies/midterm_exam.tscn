@@ -9,13 +9,13 @@ radius = 75.0
 
 [node name="MidtermExam" unique_id=971391848 instance=ExtResource("1_pgwo6")]
 script = ExtResource("2_o6xgo")
-BossName = "Zwischenprüfung"
+BossName = "Zwischenprüfung Mathe"
 MinionScene = ExtResource("3_0ki06")
 SummonInterval = 4.0
 MinionsPerSummon = 3
 SummonRadius = 150.0
 Speed = 70.0
-MaxHealth = 150
+MaxHealth = 500
 ContactDamage = 15
 
 [node name="Sprite2D" parent="." index="0" unique_id=211322272]

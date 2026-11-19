@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/enemies/Tiredness.cs" id="2_script"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tired"]
+radius = 28.0
+
+[node name="Tiredness" unique_id=971391848 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+Speed = 90.0
+MaxHealth = 15
+ContactDamage = 2
+
+[node name="Sprite2D" parent="." index="0" unique_id=211322272]
+modulate = Color(0.45, 0.5, 0.65, 1)
+scale = Vector2(0.55, 0.55)
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1126489323]
+shape = SubResource("CircleShape2D_tired")

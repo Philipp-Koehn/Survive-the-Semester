@@ -8,7 +8,12 @@
 [ext_resource type="PackedScene" uid="uid://bokvke5pm2kid" path="res://scenes/enemies/homework_stack.tscn" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://byns0oyfd6bii" path="res://scripts/enemies/WaveManager.cs" id="7_272bh"]
 [ext_resource type="PackedScene" uid="uid://2ifqq2lfu5gv" path="res://scenes/enemies/midterm_exam.tscn" id="8_kek77"]
-[ext_resource type="PackedScene" uid="uid://bxie0sxvicsiv" path="res://scenes/enemies/final_exam.tscn" id="9_4c57u"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/free_rider.tscn" id="10_frider"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/tiredness.tscn" id="11_tired"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/midterm_programming.tscn" id="12_midprog"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/exam_math.tscn" id="13_exmath"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/exam_programming.tscn" id="14_exprog"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/professor.tscn" id="15_prof"]
 
 [node name="Main" type="Node2D" unique_id=1386934817]
 
@@ -26,5 +31,7 @@ Spawner = NodePath("../EnemySpawner")
 BasicEnemy = ExtResource("2_h2yge")
 Deadline = ExtResource("4_1bvp3")
 HomeworkStack = ExtResource("6_7mycd")
-MidtermBoss = ExtResource("8_kek77")
-FinalBoss = ExtResource("9_4c57u")
+FreeRider = ExtResource("10_frider")
+Tiredness = ExtResource("11_tired")
+MidtermBosses = [ExtResource("8_kek77"), ExtResource("12_midprog")]
+ExamBosses = [ExtResource("13_exmath"), ExtResource("14_exprog"), ExtResource("15_prof")]

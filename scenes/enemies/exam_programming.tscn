@@ -1,0 +1,38 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/enemies/ExamBoss.cs" id="2_script"]
+[ext_resource type="PackedScene" uid="uid://c43dijje2s2yf" path="res://scenes/enemies/deadline.tscn" id="3_minion"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_exprog"]
+radius = 88.0
+
+[node name="ExamProgramming" unique_id=971391848 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+BossName = "Klausur Programmieren"
+MinionScene = ExtResource("3_minion")
+SummonInterval = 6.0
+MinionsPerSummon = 4
+SummonRadius = 160.0
+PreferredDistance = 300.0
+GroundInterval = 3.0
+GroundAtPlayer = true
+GroundScatterCount = 2
+GroundScatterRadius = 260.0
+GroundRadius = 110.0
+GroundWarningTime = 2.0
+GroundDamage = 20
+GroundColor = Color(1, 0.55, 0.1, 1)
+Phase2HealthFraction = 0.5
+Phase2IntervalFactor = 0.7
+Phase2ExtraScatter = 2
+Speed = 70.0
+MaxHealth = 1200
+ContactDamage = 20
+
+[node name="Sprite2D" parent="." index="0" unique_id=211322272]
+modulate = Color(0.25, 0.35, 1, 1)
+scale = Vector2(1.4, 1.4)
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1126489323]
+shape = SubResource("CircleShape2D_exprog")

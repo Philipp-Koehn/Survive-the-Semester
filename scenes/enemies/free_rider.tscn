@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/enemies/FreeRider.cs" id="2_script"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fr"]
+radius = 20.0
+
+[node name="FreeRider" unique_id=971391848 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+Speed = 170.0
+MaxHealth = 15
+ContactDamage = 0
+
+[node name="Sprite2D" parent="." index="0" unique_id=211322272]
+modulate = Color(0.15, 0.75, 0.2, 1)
+scale = Vector2(0.4, 0.4)
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1126489323]
+shape = SubResource("CircleShape2D_fr")

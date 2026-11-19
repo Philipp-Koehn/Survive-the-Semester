@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://5vwdpkhf26h8" path="res://scenes/enemies/enemy.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/enemies/ExamBoss.cs" id="2_script"]
+[ext_resource type="PackedScene" uid="uid://bokvke5pm2kid" path="res://scenes/enemies/homework_stack.tscn" id="3_minion"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_midprog"]
+radius = 75.0
+
+[node name="MidtermProgramming" unique_id=971391848 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+BossName = "Zwischenprüfung Programmieren"
+MinionScene = ExtResource("3_minion")
+SummonInterval = 7.0
+MinionsPerSummon = 2
+SummonRadius = 160.0
+DashInterval = 5.0
+DashWindup = 0.8
+DashSpeed = 520.0
+DashDuration = 0.6
+Speed = 75.0
+MaxHealth = 500
+ContactDamage = 15
+
+[node name="Sprite2D" parent="." index="0" unique_id=211322272]
+modulate = Color(0.1, 0.85, 0.85, 1)
+scale = Vector2(1.2, 1.2)
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1126489323]
+shape = SubResource("CircleShape2D_midprog")

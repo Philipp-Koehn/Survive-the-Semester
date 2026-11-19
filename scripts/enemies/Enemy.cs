@@ -1,10 +1,11 @@
 using Godot;
 
 // Basis-Gegner: läuft direkt auf den Spieler zu und macht Kontaktschaden.
-// Alle Gegnertypen (Deadline, Hausaufgaben-Stapel, Bosse) bauen hierauf auf.
+// Alle Gegnertypen (Deadline, Hausaufgaben-Stapel, Trittbrettfahrer, Müdigkeit, Bosse) bauen hierauf auf.
+// Untertypen ändern das Verhalten über GetMoveDirection, GetMoveSpeed und OnPlayerContact.
 public partial class Enemy : CharacterBody2D
 {
-	// Wird ausgelöst, wenn der Gegner stirbt (z. B. für Bosse, XP-Drops, Statistik)
+	// Wird ausgelöst, wenn der Gegner stirbt (z. B. für Bosse, XP, Statistik)
 	[Signal] public delegate void DiedEventHandler(Enemy enemy);
 
 	[Export] public float Speed = 120f;
@@ -14,11 +15,24 @@ public partial class Enemy : CharacterBody2D
 
 	public int Health { get; private set; }
 
+	// Zwischenziel, z. B. eine Tür, wenn Spieler und Gegner in verschiedenen Räumen sind.
+	// Wird von SideRoom gesetzt und gelöscht. null = direkt zum Spieler.
+	public Vector2? Waypoint { get; set; }
+
 	protected Node2D Player;
 	private double _cooldownLeft;
 
+	// Darf der Gegner gerade einem Wegpunkt folgen? (Der fliehende Trittbrettfahrer z. B. nicht)
+	protected virtual bool FollowsWaypoints => true;
+
+	// Normale Gegner werden mit jeder Woche zäher (Faktor kommt vom EnemySpawner), Bosse nicht
+	protected virtual bool ScalesWithWeek => true;
+
 	public override void _Ready()
 	{
+		if (ScalesWithWeek && GetTree().GetFirstNodeInGroup("enemy_spawner") is EnemySpawner spawner)
+			MaxHealth = Mathf.Max(1, Mathf.RoundToInt(MaxHealth * spawner.HealthMultiplier));
+
 		Health = MaxHealth;
 		AddToGroup("enemies");
 	}
@@ -31,11 +45,14 @@ public partial class Enemy : CharacterBody2D
 			if (Player == null) return;
 		}
 
-		// Verfolgungs-KI: direkt in Richtung Spieler
-		Velocity = GlobalPosition.DirectionTo(Player.GlobalPosition) * Speed;
+		// Verfolgungs-KI: Standard ist direkt in Richtung Spieler
+		Vector2 direction = Waypoint is Vector2 waypoint && FollowsWaypoints
+			? GlobalPosition.DirectionTo(waypoint)
+			: GetMoveDirection();
+		Velocity = direction * GetMoveSpeed();
 		MoveAndSlide();
 
-		// Kontaktschaden mit Abklingzeit
+		// Kontakt mit Abklingzeit
 		_cooldownLeft -= delta;
 		for (int i = 0; i < GetSlideCollisionCount(); i++)
 		{
@@ -43,10 +60,27 @@ public partial class Enemy : CharacterBody2D
 				&& hit.IsInGroup("player")
 				&& _cooldownLeft <= 0)
 			{
-				hit.Call("TakeDamage", ContactDamage);
+				OnPlayerContact(hit);
 				_cooldownLeft = DamageCooldown;
 			}
 		}
+	}
+
+	// Richtung, in die der Gegner läuft (Länge 1 oder 0)
+	protected virtual Vector2 GetMoveDirection()
+	{
+		return GlobalPosition.DirectionTo(Player.GlobalPosition);
+	}
+
+	protected virtual float GetMoveSpeed()
+	{
+		return Speed;
+	}
+
+	// Was beim Berühren des Spielers passiert (höchstens alle DamageCooldown Sekunden)
+	protected virtual void OnPlayerContact(Node player)
+	{
+		player.Call("TakeDamage", ContactDamage);
 	}
 
 	public virtual void TakeDamage(int amount)
@@ -60,6 +94,6 @@ public partial class Enemy : CharacterBody2D
 	protected virtual void Die()
 	{
 		EmitSignal(SignalName.Died, this);
-		QueueFree(); // später: XP-Drop
+		QueueFree();
 	}
 }
