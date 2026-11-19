@@ -22,6 +22,23 @@ public partial class Enemy : CharacterBody2D
 	protected Node2D Player;
 	private double _cooldownLeft;
 
+	// Tempo-Faktoren von Zonen (z. B. Rasensprenger, Ruhezone), je Quelle einer. Der kleinste gilt.
+	private readonly System.Collections.Generic.Dictionary<ulong, float> _speedModifiers = new();
+
+	public float SpeedFactor
+	{
+		get
+		{
+			float factor = 1f;
+			foreach (float f in _speedModifiers.Values)
+				factor = Mathf.Min(factor, f);
+			return factor;
+		}
+	}
+
+	public void SetSpeedModifier(GodotObject source, float factor) => _speedModifiers[source.GetInstanceId()] = factor;
+	public void ClearSpeedModifier(GodotObject source) => _speedModifiers.Remove(source.GetInstanceId());
+
 	// Darf der Gegner gerade einem Wegpunkt folgen? (Der fliehende Trittbrettfahrer z. B. nicht)
 	protected virtual bool FollowsWaypoints => true;
 
@@ -49,7 +66,7 @@ public partial class Enemy : CharacterBody2D
 		Vector2 direction = Waypoint is Vector2 waypoint && FollowsWaypoints
 			? GlobalPosition.DirectionTo(waypoint)
 			: GetMoveDirection();
-		Velocity = direction * GetMoveSpeed();
+		Velocity = direction * GetMoveSpeed() * SpeedFactor;
 		MoveAndSlide();
 
 		// Kontakt mit Abklingzeit

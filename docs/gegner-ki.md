@@ -953,7 +953,54 @@ alle 14 Prüfungen bestanden:
 | Ort (Wochen) | Hindernisse | Interaktive Elemente | Stand |
 |---|---|---|---|
 | Gänge (1–2) | Spindreihen, Schwarzes Brett, Mülleimer | Seminarraum mit automatischer Tür und Kiste, Energy-Drink-Automat, aufspringende Spinde mit Loot | fertig (20.11.2026) |
-| Outdoor-Campus (3–5) | – | Rasensprenger (bremst Gegner), Radweg mit Fahrrad | geplant |
+| Outdoor-Campus (3–5) | Sprengerköpfe | 3 Rasensprenger (Gegner auf 60 %), 2 Radwege mit Fahrrad | fertig (20.11.2026) |
 | Bibliothek (6–8) | Bücherregale | Ruhezone (Gegner halb so schnell) | geplant |
 | Mensa (9–11) | Tische | Essensausgabe (1× pro Woche Heilung), Energy-Drink-Automat | geplant |
 | Hörsaal (12–14, Prüfungsphase) | Sitzreihen am Rand | Tafel reagiert auf Boss-Warnung | geplant |
+
+## 26. Leveldesign Outdoor-Campus: Rasensprenger und Radwege
+
+**Datum:** 20.11.2026
+**Dateien:** `scripts/level/SlowZone.cs`, `scripts/level/Sprinkler.cs`, `scripts/level/BikeLane.cs`,
+`scenes/level/arena_campus.tscn`, `scripts/enemies/Enemy.cs`, `tests/headless/level_test.gd`
+
+### Umsetzung und Verhalten
+- **Tempo-Faktor für Gegner:** `Enemy` hat jetzt `SetSpeedModifier`/`ClearSpeedModifier` je Quelle
+  und `SpeedFactor` (der kleinste Faktor gilt). Die Bewegung wird damit multipliziert.
+- **`SlowZone`** (gemeinsamer Baustein, Kreis oder Rechteck): Gegner, die den Bereich betreten,
+  bekommen `EnemySpeedFactor`, beim Verlassen wird er wieder entfernt. Bosse sind ausgenommen
+  (`AffectBosses = false`), der Spieler wird nicht gebremst.
+- **Rasensprenger** (`Sprinkler : SlowZone`, 3 Stück bei (−1200, −900), (1300, 700), (−600, 1500)):
+  ein kleiner fester Sprengerkopf, um ihn ein blauer Kreis aus nassem Gras (Radius 220).
+  Gegner darin laufen mit **60 %** ihres Tempos. Ein Wasserstrahl dreht sich langsam.
+- **Radwege** (`BikeLane`, einer waagerecht bei y = −1700, einer senkrecht bei x = 1900,
+  je 96 px breit, über die ganze Arena): graue Spur mit gestrichelter Mittellinie.
+  - Alle 8–14 s (senkrecht 10–16 s) blinkt die Spur 1,2 s gelb, das ist die Warnung („Klingeln“).
+  - Dann fährt ein rotes Fahrrad mit 900 px/s durch, abwechselnd in beide Richtungen.
+  - Wer getroffen wird, nimmt einmal pro Durchfahrt Schaden: **Gegner 20**, **Spieler 5**.
+    Bosse werden nicht getroffen (`HitsBosses = false`).
+
+### Designentscheidungen
+- **Sprenger als taktischer Ort:** Wer mitten im Sprenger steht, hat mehr Zeit gegen Verfolger.
+  Das belohnt Bewegung über die weite Karte, ohne den Spieler selbst zu bremsen.
+- **Fahrrad als Durchfahrt statt festes bewegliches Hindernis:** Ein fester Körper würde Spieler
+  und Gegner wegschieben oder an Wänden einklemmen. Die Durchfahrt hat eine klare Warnung wie die
+  Bodenangriffe der Bosse, und man kann Gegner absichtlich auf die Spur locken.
+- **Spuren am Rand, Mitte frei:** Der Spieler startet in der Mitte. Auf beiden Spuren bleibt
+  genug Platz zum Ausweichen (die Arena ist 5000 × 5000).
+- **Performance:** Zonen arbeiten nur mit Area2D-Signalen. Der Wasserstrahl dreht nur einen
+  Kind-Knoten, ohne neu zu zeichnen. Die Spur zeichnet nur während der Warnung neu, das Fahrrad
+  gibt es nur während der Durchfahrt.
+
+### Test
+Headless (`level_test.gd -- campus`, Woche 3, Spawner und Waffen aus), 8 von 8 bestanden:
+- 3 Sprenger und 2 Radwege vorhanden.
+- Gegner im Sprenger 72 statt 120 px/s (60 %), außerhalb 120, Boss im Sprenger unverändert 70.
+- Durchfahrt: Warnung ausgelöst, Hausaufgaben-Stapel auf der Spur von 45 auf 25 HP,
+  Spieler auf der Spur genau einmal getroffen, Spur danach wieder frei.
+- Dauerläufe Woche 3 und 5 (je 60 s, mit Zwischenprüfung Mathe): keine Fehler,
+  6 bzw. 3 Durchfahrten, höchstens 37 Gegner und 163 Nodes.
+- Die Gänge-Tests laufen mit dem neuen Tempo-Faktor weiterhin alle durch.
+
+### Offene Punkte
+- Sound für Klingel und Treffer: `Triggered("fahrrad_klingel")` und `Triggered("fahrrad_treffer")` (Tim).

@@ -3,6 +3,7 @@ extends SceneTree
 # Aufruf aus dem Projektordner:
 #   Godot --headless --path . -s res://tests/headless/level_test.gd -- soak <woche> <sekunden>
 #   Godot --headless --path . -s res://tests/headless/level_test.gd -- gaenge
+#   ... -- campus | bibliothek | mensa | hoersaal
 # Achtung: Läufe können über MetaProgress Credits in den lokalen Spielstand schreiben.
 # run_tests.sh sichert den Spielstand vorher und stellt ihn danach wieder her.
 
@@ -17,7 +18,9 @@ var triggers := {}
 var step := 0
 var fails := 0
 
-# Gänge-Test
+const LOCATION_WEEKS = {"gaenge": 1, "campus": 3, "bibliothek": 6, "mensa": 9, "hoersaal": 12}
+
+# Orts-Tests
 var room: Node2D
 var door: Node
 var chest: Node
@@ -35,15 +38,15 @@ func _initialize():
 	main = load("res://main.tscn").instantiate()
 	main.get_node("PlayerController/PlayerStats").set("MaxHealth", 1000000) # Test-Spieler stirbt nicht
 	var wm = main.get_node("WaveManager")
-	if mode == "gaenge":
-		wm.set("TestStartWeek", 1)
+	if LOCATION_WEEKS.has(mode):
+		wm.set("TestStartWeek", LOCATION_WEEKS[mode])
 		wm.set("WeekDuration", 100000.0)
 	else:
 		wm.set("TestStartWeek", week)
 	root.add_child(main)
 	current_scene = main
 	player = main.get_node("PlayerController")
-	if mode == "gaenge":
+	if LOCATION_WEEKS.has(mode):
 		main.get_node("EnemySpawner").process_mode = Node.PROCESS_MODE_DISABLED
 		player.get_node("WeaponInventory").process_mode = Node.PROCESS_MODE_DISABLED
 	print("[TEST] Modus ", mode, " Woche ", week, " Dauer ", duration)
@@ -81,8 +84,9 @@ func _process(delta):
 	if up.get("IsChoosing"):
 		up.call("Choose", 0)
 
-	if mode == "gaenge":
-		return gaenge_test()
+	match mode:
+		"gaenge": return gaenge_test()
+		"campus": return campus_test()
 	return soak_test()
 
 func soak_test() -> bool:
@@ -235,4 +239,65 @@ func gaenge_test() -> bool:
 			check(count("pickups") == 0, "Loot verschwindet nach 20 s (%d übrig)" % count("pickups"))
 			print("[RESULT] Fehlgeschlagen: ", fails, " Trigger ", triggers)
 			return true
+	return false
+
+func spawn_enemy(path: String, pos: Vector2) -> Node:
+	var e = load(path).instantiate()
+	main.add_child(e)
+	e.global_position = pos
+	spawned.append(e)
+	return e
+
+func near(value: float, target: float, tolerance := 0.06) -> bool:
+	return abs(value - target) <= target * tolerance
+
+func finish() -> bool:
+	print("[RESULT] Fehlgeschlagen: ", fails, " Trigger ", triggers)
+	return true
+
+var probe: Node
+var probe_hp := 0
+var zones := []
+var lanes := []
+
+func campus_test() -> bool:
+	match step:
+		0:
+			if t < 0.5: return false
+			zones = get_nodes_in_group("slow_zones")
+			lanes = get_nodes_in_group("bike_lanes")
+			check(zones.size() == 3 and lanes.size() == 2, "Campus hat 3 Rasensprenger und 2 Radwege (%d/%d)" % [zones.size(), lanes.size()])
+			spawn_enemy("res://scenes/enemies/enemy.tscn", zones[0].global_position + Vector2(30, 0))
+			spawn_enemy("res://scenes/enemies/enemy.tscn", Vector2(800, -300))
+			spawn_enemy("res://scenes/enemies/midterm_exam.tscn", zones[1].global_position)
+			step = 1
+		1:
+			if t < 1.0: return false
+			var v_in: float = spawned[0].velocity.length()
+			var v_out: float = spawned[1].velocity.length()
+			var v_boss: float = spawned[2].velocity.length()
+			check(near(v_in, 120.0 * 0.6), "Gegner im nassen Gras auf 60 %% gebremst (%.0f statt 120)" % v_in)
+			check(near(v_out, 120.0), "Gegner außerhalb normal schnell (%.0f)" % v_out)
+			check(near(v_boss, 70.0), "Boss im nassen Gras nicht gebremst (%.0f statt 70)" % v_boss)
+			for e in spawned: e.queue_free()
+			spawned.clear()
+			step = 2
+		2:
+			if t < 1.5: return false
+			player.global_position = Vector2(0, -1700) # auf dem Radweg
+			probe = spawn_enemy("res://scenes/enemies/homework_stack.tscn", Vector2(250, -1700))
+			step = 3
+		3:
+			if t < 1.7: return false
+			probe_hp = probe.get("Health")
+			lanes[0].call("StartPass")
+			check(lanes[0].get("IsActive") == true and triggers.get("fahrrad_klingel", 0) == 1, "Radweg warnt vor der Durchfahrt (Klingeln)")
+			step = 4
+		4:
+			if t < 10.5: return false
+			var hp = probe.get("Health") if is_instance_valid(probe) else -1
+			check(hp >= 0 and hp <= probe_hp - 20, "Fahrrad trifft Gegner (%d -> %d HP)" % [probe_hp, hp])
+			check(triggers.get("fahrrad_treffer", 0) == 1, "Fahrrad trifft Spieler genau einmal")
+			check(lanes[0].get("IsActive") == false, "Radweg nach der Durchfahrt wieder frei")
+			return finish()
 	return false
